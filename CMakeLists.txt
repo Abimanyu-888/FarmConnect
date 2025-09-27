@@ -8,7 +8,7 @@ set(CMAKE_CXX_EXTENSIONS      OFF)
 
 set(INCLUDE_PATHS /opt/homebrew/opt/asio/include /Users/macbookm2/crow/Crow/include )
 
-add_executable(dsa_project main.cpp src/helper.cpp)
+add_executable(dsa_project main.cpp src/helper.cpp src/farmer_routes.cpp)
 
 target_include_directories(dsa_project PUBLIC ${INCLUDE_PATHS} include)
 

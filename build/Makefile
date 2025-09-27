@@ -160,6 +160,30 @@ main.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/dsa_project.dir/build.make CMakeFiles/dsa_project.dir/main.cpp.s
 .PHONY : main.cpp.s
 
+src/farmer_routes.o: src/farmer_routes.cpp.o
+.PHONY : src/farmer_routes.o
+
+# target to build an object file
+src/farmer_routes.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/dsa_project.dir/build.make CMakeFiles/dsa_project.dir/src/farmer_routes.cpp.o
+.PHONY : src/farmer_routes.cpp.o
+
+src/farmer_routes.i: src/farmer_routes.cpp.i
+.PHONY : src/farmer_routes.i
+
+# target to preprocess a source file
+src/farmer_routes.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/dsa_project.dir/build.make CMakeFiles/dsa_project.dir/src/farmer_routes.cpp.i
+.PHONY : src/farmer_routes.cpp.i
+
+src/farmer_routes.s: src/farmer_routes.cpp.s
+.PHONY : src/farmer_routes.s
+
+# target to generate assembly for a file
+src/farmer_routes.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/dsa_project.dir/build.make CMakeFiles/dsa_project.dir/src/farmer_routes.cpp.s
+.PHONY : src/farmer_routes.cpp.s
+
 src/helper.o: src/helper.cpp.o
 .PHONY : src/helper.o
 
@@ -197,6 +221,9 @@ help:
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"
+	@echo "... src/farmer_routes.o"
+	@echo "... src/farmer_routes.i"
+	@echo "... src/farmer_routes.s"
 	@echo "... src/helper.o"
 	@echo "... src/helper.i"
 	@echo "... src/helper.s"
