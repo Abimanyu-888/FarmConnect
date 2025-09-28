@@ -38,14 +38,19 @@ struct buyer_data {
     std::string password;
     std::vector<std::string> orders;
     std::string state;
+    std::vector<std::string> cart;
+    std::vector<int> quantity;
     buyer_data(const std::string& name,const std::string& username,const std::string& email,
-         const std::string& password, const std::string& state, std::vector<std::string> orders={}):
+         const std::string& password, const std::string& state, std::vector<std::string> orders={},
+        std::vector<std::string> cart={},std::vector<int> quantity={}):
     name(name), 
     username(username),
     email(email),
     password(password),
     state(state),
-    orders(std::move(orders))
+    orders(std::move(orders)),
+    cart(std::move(cart)),
+    quantity(std::move(quantity))
     {}
 };
 struct product_data {
@@ -111,6 +116,8 @@ inline void to_json(nlohmann::json& j, const buyer_data& data) {
         {"password", data.password},
         {"orders", data.orders},
         {"state",data.state},
+        {"cart",data.cart},
+        {"quantity",data.quantity}
     };
 }
 inline void to_json(nlohmann::json& j, const product_data& data) {

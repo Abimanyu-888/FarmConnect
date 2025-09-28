@@ -6,34 +6,46 @@
     <title>FarmConnect - User Profile</title>
     <link rel="stylesheet" href="/static/css/buyer/profile.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
 
     <header class="site-header">
-        <div class="container header-container">
-            <div class="logo-container">
-                <a href="#" class="logo">FarmConnect</a>
-            </div>
-            <div class="search-container">
-                <div class="search-wrapper">
-                    <input type="search" placeholder="Search for fresh produce..." class="search-input">
-                    <div class="search-icon"><i class="fas fa-search"></i></div>
+        <div class="header-container">
+            <div class="header-main">
+                <div class="header-logo">
+                    <a href="#" class="logo-link">FarmConnect</a>
+                </div>
+
+                <div class="header-search">
+                    <div class="search-wrapper">
+                        <input type="search" placeholder="Search for fresh produce..." class="search-input">
+                        <div class="search-icon">
+                            <i class="fas fa-search"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="header-actions">
+                    <a href="/buyer/cart" class="action-link">
+                        <i class="fas fa-shopping-cart fa-lg"></i>
+                    </a>
+                    <a href="#" class="action-link">
+                        <i class="fas fa-user-circle fa-lg"></i>
+                    </a>
                 </div>
             </div>
-            <div class="header-actions">
-                <a href="#" class="action-link cart-icon"><i class="fas fa-shopping-cart fa-lg"></i></a>
-                <a href="#" class="action-link user-icon active"><i class="fas fa-user-circle fa-lg"></i></a>
-            </div>
         </div>
-        <nav class="secondary-nav">
+        
+        <nav class="category-nav">
             <div class="container">
-                <div class="nav-links">
-                    <a href="#">All Products</a>
-                    <a href="#">Fresh Vegetables</a>
-                    <a href="#">Fruits</a>
-                    <a href="#">Dairy & Eggs</a>
-                    <a href="#">Grains</a>
-                    <a href="#">Organic</a>
+                <div class="category-links">
+                    <a href="#" class="category-link">All Products</a>
+                    <a href="#" class="category-link">Fresh Vegetables</a>
+                    <a href="#" class="category-link">Fruits</a>
+                    <a href="#" class="category-link">Dairy & Eggs</a>
+                    <a href="#" class="category-link">Grains</a>
+                    <a href="#" class="category-link">Organic</a>
                 </div>
             </div>
         </nav>
@@ -77,27 +89,25 @@
 
             <div class="profile-content">
                 <section id="profile-info" class="profile-section card">
-                    <h1 class="section-heading">Profile Information</h1>
-                    <div class="info-grid">
-                        <div>
-                            <label>Full Name</label>
-                            <p>John Doe</p>
+                    <h2 class="section-title">Profile Information</h2>
+                    <p class="section-description">Update your personal and farm details.</p>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="fullName" class="form-label">Full Name</label>
+                            <input type="text" id="fullName" value="{{name}}" class="form-input" disabled>
                         </div>
-                         <div>
-                            <label>Email Address</label>
-                            <p>john.doe@example.com</p>
+                        <div class="form-group">
+                            <label for="farmName" class="form-label">Username</label>
+                            <input type="text" id="farmName" value="{{username}}" class="form-input" disabled>
                         </div>
-                         <div>
-                            <label>Phone Number</label>
-                            <p>(123) 456-7890</p>
+                        <div class="form-group">
+                            <label for="email" class="form-label">Email Address</label>
+                            <input type="email" id="email" value="{{email}}" class="form-input" disabled>
                         </div>
-                        <div>
-                            <label>Member Since</label>
-                            <p>August 2024</p>
+                         <div class="form-group">
+                            <label for="phone" class="form-label">Phone Number</label>
+                            <input type="tel" id="phone" value={{phoneNo}} class="form-input" disabled>
                         </div>
-                    </div>
-                    <div class="section-footer">
-                        <button class="btn btn-primary">Edit Profile</button>
                     </div>
                 </section>
 
@@ -183,41 +193,25 @@
         </div>
     </main>
 
-    <footer class="site-footer-bottom">
+    <footer id="contact" class="site-footer-main">
         <div class="container">
             <div class="footer-grid">
-                <div class="footer-column">
-                    <h3 class="footer-logo">FarmConnect</h3>
-                    <p>Freshness delivered from farm to business.</p>
+                <div>
+                    <h3>FarmConnect</h3>
+                    <p>Building a more sustainable and transparent food system, one connection at a time.</p>
                 </div>
-                <div class="footer-column">
-                    <h4>Quick Links</h4>
-                    <ul>
-                        <li><a href="#">About Us</a></li>
-                        <li><a href="#">For Farmers</a></li>
-                        <li><a href="#">For Buyers</a></li>
-                        <li><a href="#">Contact</a></li>
+                <div>
+                    <h3>Founders</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">Abimanyu</a></li>
+                        <li><a href="#">Sriram</a></li>
+                        <li><a href="#">Yuvraj</a></li>
                     </ul>
                 </div>
-                <div class="footer-column">
-                    <h4>Follow Us</h4>
-                    <div class="social-links">
-                        <a href="#"><i class="fab fa-facebook-f fa-lg"></i></a>
-                        <a href="#"><i class="fab fa-twitter fa-lg"></i></a>
-                        <a href="#"><i class="fab fa-instagram fa-lg"></i></a>
-                    </div>
+                <div>
+                    <h3>Connect With Us</h3>
+                    <p>FarmConnect@gmail.com</p>
                 </div>
-                 <div class="footer-column">
-                    <h4>Newsletter</h4>
-                    <p>Stay updated with our latest products and offers.</p>
-                    <div class="newsletter-form">
-                        <input type="email" placeholder="Your email">
-                        <button>Subscribe</button>
-                    </div>
-                </div>
-            </div>
-            <div class="footer-copyright">
-                &copy; 2025 FarmConnect. All Rights Reserved.
             </div>
         </div>
     </footer>

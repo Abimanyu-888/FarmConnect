@@ -29,6 +29,7 @@ int main() {
     app.get_middleware<Session>();
 
     registerFarmerRoutes(app,farmerTable,productTable,orderTable,buyerTable);
+    registerBuyerRoutes(app,farmerTable,productTable,orderTable,buyerTable);
 
     CROW_ROUTE(app, "/db/images/<string>")([](const crow::request&, crow::response& res, const std::string& filename) {
         res.set_static_file_info("db/images/" + filename);
@@ -49,7 +50,7 @@ int main() {
         if (user_type == "Farmer") {
             res.add_header("Location", "/farmer/dashboard");
         } else {
-            res.add_header("Location", "/buyer");
+            res.add_header("Location", "/buyer/home");
         }
         return res;
     });
@@ -59,19 +60,6 @@ int main() {
         return page.render();
     });
 
-    CROW_ROUTE(app, "/buyer")([&app](const crow::request& req) -> crow::response {
-        auto& session = app.get_context<Session>(req);
-        std::string user_type = session.get<std::string>("user_type");
-        
-        if (user_type != "Buyer") {
-            crow::response res(303);
-            res.add_header("Location", "/error");
-            return res;
-        }
-
-        auto page = crow::mustache::load("buyer/buyer_home.html");
-        return crow::response(page.render());
-    });
 
     CROW_ROUTE(app, "/sign_in")([]() {
         auto page = crow::mustache::load("sign_in.html");
@@ -113,7 +101,7 @@ int main() {
             if (type == "Farmer") {
                 res.add_header("Location", "/farmer/dashboard");
             } else {
-                res.add_header("Location", "/buyer");
+                res.add_header("Location", "/buyer/home");
             }
         } else {
             res.code = 303;
@@ -147,7 +135,7 @@ int main() {
         } else {
             buyer_data* new_user = new buyer_data(name, username, email, pass, state);
             buyerTable.add(new_user);
-            res.add_header("Location", "/buyer");
+            res.add_header("Location", "/buyer/home");
         }
         email_data* newnode=new email_data(username,email);
         emialMap.add(newnode);

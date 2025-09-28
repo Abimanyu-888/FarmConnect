@@ -7,7 +7,9 @@
         ],
         "password": "abimanyu",
         "state": "tamilnadu",
-        "username": "buyer001"
+        "username": "buyer001",
+        "cart":["product001"],
+        "quantity":[5]
     },
     {
         "email": "buyer2@gmail.com",
@@ -17,6 +19,8 @@
         ],
         "password": "abimanyu",
         "state": "tamilnadu",
-        "username": "buyer002"
+        "username": "buyer002",
+        "cart":["product003"],
+        "quantity":[5]
     }
 ]
