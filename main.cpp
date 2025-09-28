@@ -28,7 +28,7 @@ int main() {
 
     app.get_middleware<Session>();
 
-    registerFarmerRoutes(app,farmerTable,emialMap,productTable,orderTable);
+    registerFarmerRoutes(app,farmerTable,productTable,orderTable,buyerTable);
 
     CROW_ROUTE(app, "/db/images/<string>")([](const crow::request&, crow::response& res, const std::string& filename) {
         res.set_static_file_info("db/images/" + filename);

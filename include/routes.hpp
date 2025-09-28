@@ -10,5 +10,7 @@
 #include <filesystem>
 using Session = crow::SessionMiddleware<crow::InMemoryStore>;
 
-void registerFarmerRoutes(crow::App<crow::CookieParser, Session>& app,Hash_Table<farmer_data>& farmerTable,Hash_Table<email_data>& emailTable,Hash_Table<product_data>& productTable,Hash_Table<order_data>& orderTable);
+void registerFarmerRoutes(crow::App<crow::CookieParser, Session>& app,Hash_Table<farmer_data>& farmerTable,
+                            Hash_Table<product_data>& productTable,Hash_Table<order_data>& orderTable,Hash_Table<buyer_data>& buyerTable);
+int calculate_order_total(const order_data* order, Hash_Table<product_data>& products);
 #endif 

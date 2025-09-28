@@ -18,6 +18,17 @@
     --yellow-500: #eab308;
     --blue-600: #2563eb;
     --indigo-600: #4f46e5;
+    --green-800: #166534;
+    --red-50: #fef2f2;
+    --red-100: #fee2e2;
+    --red-600: #dc2626;
+    --red-700: #b91c1c;
+    --yellow-100: #fef9c3;
+    --yellow-700: #854d0e;
+    --blue-100: #dbeafe;
+    --blue-700: #1d4ed8;
+    --indigo-100: #e0e7ff;
+    --indigo-700: #4338ca;
     
     --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
     --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
@@ -321,10 +332,10 @@ a {
     border-radius: 9999px;
 }
 
-.status-shipped, .status-delivered { background-color: #dcfce7; color: #166534; }
-.status-pending { background-color: #fef9c3; color: #854d0e; }
-.status-canceled { background-color: #fee2e2; color: #991b1b; }
-
+.status-shipped { background-color: var(--blue-100); color: var(--blue-700); }
+.status-delivered { background-color: #dcfce7; color: #166534; }
+.status-pending { background-color: var(--yellow-100); color: var(--yellow-700); }
+.status-canceled { background-color: var(--red-100); color: var(--red-700); }
 
 /* --- Stock Levels --- */
 .stock-items {

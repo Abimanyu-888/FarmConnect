@@ -22,19 +22,19 @@
                 </a>
             </div>
             <nav class="sidebar-nav">
-                <a href="#" class="nav-link">
+                <a href="/farmer/dashboard" class="nav-link">
                      <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z" /></svg>
                     Dashboard
                 </a>
-                <a href="#" class="nav-link">
+                <a href="/farmer/products" class="nav-link">
                     <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" /></svg>
                     My Products
                 </a>
-                <a href="#" class="nav-link active">
+                <a href="/farmer/orders/all" class="nav-link active">
                     <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 12h16.5m-16.5 3.75h16.5M3.75 19.5h16.5M5.625 4.5h12.75a1.875 1.875 0 010 3.75H5.625a1.875 1.875 0 010-3.75z" /></svg>
                     Orders
                 </a>
-                <a href="#" class="nav-link">
+                <a href="/farmer/settings" class="nav-link">
                     <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" /></svg>
                     Settings
                 </a>
@@ -44,7 +44,7 @@
         <main class="main-content">
             <div class="content-wrapper">
                 <header class="page-header">
-                    <a href="#" class="back-link">
+                    <a href="/farmer/orders/all" class="back-link">
                         <svg class="back-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M12.79 5.23a.75.75 0 01-.02 1.06L8.832 10l3.938 3.71a.75.75 0 11-1.04 1.08l-4.5-4.25a.75.75 0 010-1.08l4.5-4.25a.75.75 0 011.06.02z" clip-rule="evenodd" /></svg>
                         Back to Orders
                     </a>
@@ -52,13 +52,11 @@
                         <div>
                             <h1 class="header-title">
                                 Order Details 
-                                <span class="order-id">#FC5892</span>
+                                <span class="order-id">{{order_id}}</span>
                             </h1>
-                             <p class="header-subtitle">Order placed on August 15, 2025</p>
                         </div>
                         <div class="header-actions">
-                             <span class="status-badge shipped">Shipped</span>
-                             <button class="btn">Print Invoice</button>
+                             <span class="status-badge {{status}}">{{status}}</span>
                         </div>
                     </div>
                 </header>
@@ -67,51 +65,30 @@
                     
                     <div class="grid-col-span-2">
                         <div class="card">
-                            <h2 class="card-title">Order Items (2)</h2>
+                            <h2 class="card-title">Order Items ({{items_count}})</h2>
                             <div class="order-items-container">
+                                {{#product_list}}
                                 <div class="order-item">
-                                    <img src="https://placehold.co/100x100/a3e635/ffffff?text=Apples" alt="Organic Shimla Apples" class="item-image">
+                                    <img src="{{file_path}}" alt="Organic Shimla Apples" class="item-image" onerror="this.onerror=null;this.src='https://placehold.co/400x300/fecaca/991b1b?text=Image+Failed';">
                                     <div class="item-details">
-                                        <h3 class="item-name">Organic Shimla Apples</h3>
-                                        <p class="item-sku">SKU: FRT-APL-01</p>
+                                        <h3 class="item-name">{{product_name}}</h3>
+                                        <p class="item-sku">{{category}}</p>
                                     </div>
                                     <div class="item-price">
-                                        <p class="price-main">₹150.00 x 200 kg</p>
-                                        <p class="price-sub">₹30,000.00</p>
+                                        <p class="price-main">₹{{price}} x {{quantity}} {{unit}}</p>
+                                        <p class="price-sub">₹{{sub_total}}</p>
                                     </div>
                                 </div>
-                                 <div class="order-item has-divider">
-                                    <img src="https://placehold.co/100x100/fde047/ffffff?text=Corn" alt="Sweet Corn" class="item-image">
-                                    <div class="item-details">
-                                        <h3 class="item-name">Sweet Corn</h3>
-                                        <p class="item-sku">SKU: VEG-CRN-05</p>
-                                    </div>
-                                    <div class="item-price">
-                                        <p class="price-main">₹100.00 x 150 kg</p>
-                                        <p class="price-sub">₹15,000.00</p>
-                                    </div>
-                                </div>
+                                {{/product_list}}
                             </div>
                         </div>
                         
                         <div class="card">
                             <h2 class="card-title">Order Summary</h2>
                             <div class="summary-container">
-                                <div class="summary-row">
-                                    <span>Subtotal</span>
-                                    <span class="font-medium">₹45,000.00</span>
-                                </div>
-                                <div class="summary-row">
-                                    <span>Shipping</span>
-                                    <span class="font-medium">₹2,500.00</span>
-                                </div>
-                                <div class="summary-row">
-                                    <span>Taxes (GST)</span>
-                                    <span class="font-medium">₹2,250.00</span>
-                                </div>
                                 <div class="summary-row total">
                                     <span class="font-bold">Grand Total</span>
-                                    <span class="font-bold">₹49,750.00</span>
+                                    <span class="font-bold">₹{{total}}</span>
                                 </div>
                             </div>
                         </div>
@@ -121,11 +98,10 @@
                         <div class="card">
                             <h2 class="card-title">Buyer Details</h2>
                             <div class="buyer-details">
-                                <p class="buyer-name">Green Grocers Inc.</p>
+                                <p class="buyer-name">{{buyer}}</p>
                                 <p class="buyer-contact">
-                                    <a href="mailto:purchasing@greengrocers.com">purchasing@greengrocers.com</a>
+                                    <a href="mailto:purchasing@greengrocers.com">{{buyer_email}}</a>
                                 </p>
-                                <p class="buyer-contact">+91 98765 43210</p>
                             </div>
                         </div>
                         

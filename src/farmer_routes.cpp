@@ -1,8 +1,18 @@
 #include "routes.hpp"
+#include<unordered_set>
 
-
-void registerFarmerRoutes(crow::App<crow::CookieParser, Session>& app,Hash_Table<farmer_data>& farmerTable,Hash_Table<email_data>& emailTable,Hash_Table<product_data>& productTable,Hash_Table<order_data>& orderTable) {
-    CROW_ROUTE(app, "/farmer/dashboard")([&app,&farmerTable,&productTable](const crow::request& req) -> crow::response {
+int calculate_order_total(const order_data* order, Hash_Table<product_data>& products) {
+    int total = 0;
+    for (size_t i = 0; i < order->product_ids.size(); ++i) {
+        if (product_data* p = products.find(order->product_ids[i])) {
+            total += order->quantity[i] * p->price;
+        }
+    }
+    return total;
+}
+void registerFarmerRoutes(crow::App<crow::CookieParser, Session>& app,Hash_Table<farmer_data>& farmerTable,
+                            Hash_Table<product_data>& productTable,Hash_Table<order_data>& orderTable,Hash_Table<buyer_data>& buyerTable) {
+    CROW_ROUTE(app, "/farmer/dashboard")([&app,&farmerTable,&productTable,&orderTable](const crow::request& req) -> crow::response {
         auto& session = app.get_context<Session>(req);
         std::string user_type = session.get<std::string>("user_type");
 
@@ -15,6 +25,7 @@ void registerFarmerRoutes(crow::App<crow::CookieParser, Session>& app,Hash_Table
         std::string username = session.get<std::string>("username");
         farmer_data* data = farmerTable.find(username);
         crow::mustache::context ctx;
+
         ctx["username"] = username;
         ctx["revenue"]=data->Total_Revenue;
         ctx["pending_orders_count"]=data->orders.size();
@@ -30,6 +41,20 @@ void registerFarmerRoutes(crow::App<crow::CookieParser, Session>& app,Hash_Table
             });
         }
         ctx["stock_list"]=std::move(stock_list);
+
+        crow::json::wvalue::list order_list;
+        for(std::string& order_id:data->orders){
+            order_data* orderData=orderTable.find(order_id);
+            
+            order_list.emplace_back(crow::json::wvalue{
+                {"order_id",orderData->order_id},
+                {"buyer",orderData->buyer},
+                {"total",calculate_order_total(orderData,productTable)},
+                {"status",orderData->status}
+            });
+        }
+        ctx["order_list"]=std::move(order_list);
+
 
         auto page = crow::mustache::load("farmer/farmer_dashboard.html");
         return crow::response(page.render(ctx));
@@ -48,7 +73,7 @@ void registerFarmerRoutes(crow::App<crow::CookieParser, Session>& app,Hash_Table
         farmer_data* data = farmerTable.find(username);
         crow::mustache::context ctx;
         crow::json::wvalue::list product_list;
-        for(auto& prod_id:data->products){
+        for(std::string& prod_id:data->products){
             product_data* prod_data=productTable.find(prod_id);
             bool is_in_stock = (prod_data->stock > 0);
             std::string thepath = "/db/images/" + prod_id;
@@ -68,7 +93,7 @@ void registerFarmerRoutes(crow::App<crow::CookieParser, Session>& app,Hash_Table
         return crow::response(page.render(ctx));
     });
 
-    CROW_ROUTE(app,"/farmer/orders")([&app](const crow::request& req ) -> crow::response {
+    CROW_ROUTE(app,"/farmer/orders/<string>")([&app,&farmerTable,&orderTable,&productTable](const crow::request& req,const std::string& tab ) -> crow::response {
         auto& session = app.get_context<Session>(req);
         std::string user_type = session.get<std::string>("user_type");
 
@@ -77,10 +102,88 @@ void registerFarmerRoutes(crow::App<crow::CookieParser, Session>& app,Hash_Table
             res.add_header("Location", "/error");
             return res;
         }
+        std::string username = session.get<std::string>("username");
+        farmer_data* data = farmerTable.find(username);
+
+
+        const static std::unordered_set<std::string> valid_tabs ={"all", "pending", "shipped", "delivered"};
+
+        if(valid_tabs.find(tab) == valid_tabs.end()){
+            crow::response res(303);
+            res.add_header("Location", "/error");
+            return res;
+        }
+
+        crow::mustache::context ctx;
+        crow::json::wvalue::list order_list;
+
+        for(std::string& order_id:data->orders){
+            order_data* orderData=orderTable.find(order_id);
+            if(tab=="all" || tab==orderData->status){
+                order_list.emplace_back(crow::json::wvalue{
+                    {"order_id",orderData->order_id},
+                    {"buyer",orderData->buyer},
+                    {"total",calculate_order_total(orderData,productTable)},
+                    {"status",orderData->status}
+                });
+            }
+        }
+        ctx["order_list"]=std::move(order_list);
+        ctx["all"] = (tab == "all");
+        ctx["pending"] = (tab == "pending");
+        ctx["shipped"] = (tab == "shipped");
+        ctx["delivered"] = (tab == "delivered");
 
         auto page = crow::mustache::load("farmer/farmer_orders.html");
-        return crow::response(page.render());
+        return crow::response(page.render(ctx));
     });
+
+    CROW_ROUTE(app, "/farmer/orders/view/<string>")([&app,&farmerTable,&productTable,&orderTable,&buyerTable](const crow::request& req ,const std::string& order_id) -> crow::response {
+        auto& session = app.get_context<Session>(req);
+        std::string user_type = session.get<std::string>("user_type");
+
+        if (user_type != "Farmer") {
+            crow::response res(303);
+            res.add_header("Location", "/error");
+            return res;
+        }
+        order_data* orderData=orderTable.find(order_id);
+        buyer_data* buyerData=buyerTable.find(orderData->buyer);
+
+        crow::mustache::context ctx;
+        ctx["order_id"]=order_id;
+        ctx["status"]=orderData->status;
+        ctx["buyer"]=buyerData->name;
+        ctx["buyer_email"]=buyerData->email;
+        int items_count=0;
+        int total=0;
+
+        crow::json::wvalue::list product_list;
+        for(int i=0;i<orderData->product_ids.size();i++){
+            product_data* prod_data=productTable.find(orderData->product_ids[i]);
+            std::string thepath = "/db/images/" + orderData->product_ids[i];
+            product_list.emplace_back(crow::json::wvalue{
+                {"product_name",prod_data->product_name},
+                {"category",prod_data->category},
+                {"price",prod_data->price},
+                {"quantity",orderData->quantity[i]},
+                {"unit",prod_data->unit},
+                {"sub_total",(prod_data->price)*(orderData->quantity[i])},
+                {"file_path",thepath + prod_data->img_extension}
+            });
+            items_count++;
+            total+=(prod_data->price)*(orderData->quantity[i]);
+        }
+
+        ctx["product_list"]=std::move(product_list);
+        ctx["total"]=total;
+        ctx["items_count"]=items_count;
+        
+
+        auto page = crow::mustache::load("farmer/order_view.html");
+        return crow::response(page.render(ctx));
+    });
+    
 
     CROW_ROUTE(app,"/farmer/settings")([&app,&farmerTable](const crow::request& req ) -> crow::response {
         auto& session = app.get_context<Session>(req);

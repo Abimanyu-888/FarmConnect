@@ -1,37 +1,35 @@
 [
     {
-        "product_id":"product001",
-        "product_name":"mango",
-        "category":"fruit",
-        "owner":"farmer001",
-        "price":50,
-        "stock":0,
-        "unit":"kg",
-        "about":"Fresh",
-        "img_extension":".webp"
-    
+        "about": "Fresh",
+        "category": "fruit",
+        "img_extension": ".webp",
+        "owner": "farmer001",
+        "price": 250,
+        "product_id": "product002",
+        "product_name": "apple",
+        "stock": 120,
+        "unit": "kg"
     },
     {
-        "product_id":"product002",
-        "product_name":"apple",
-        "category":"fruit",
-        "owner":"farmer001",
-        "price":250,
-        "stock":120,
-        "unit":"kg",
-        "about":"Fresh",
-        "img_extension":".webp"
-
+        "about": "Fresh",
+        "category": "fruit",
+        "img_extension": ".webp",
+        "owner": "farmer002",
+        "price": 40,
+        "product_id": "product003",
+        "product_name": "mango",
+        "stock": 12,
+        "unit": "kg"
     },
     {
-        "product_id":"product003",
-        "product_name":"mango",
-        "category":"fruit",
-        "owner":"farmer002",
-        "price":40,
-        "stock":12,
-        "unit":"kg",
-        "about":"Fresh",
-        "img_extension":".webp"
+        "about": "Fresh",
+        "category": "fruit",
+        "img_extension": ".webp",
+        "owner": "farmer001",
+        "price": 50,
+        "product_id": "product001",
+        "product_name": "mango",
+        "stock": 0,
+        "unit": "kg"
     }
 ]

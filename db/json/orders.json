@@ -1,12 +1,24 @@
 [
     {
-        "order_id":"order001",
-        "product_id":"product002",
-        "quantity":20
+        "buyer": "buyer002",
+        "order_id": "order002",
+        "product_id": [
+            "product003"
+        ],
+        "quantity": [
+            2
+        ],
+        "status": "delivered"
     },
     {
-        "order_id":"order002",
-        "product_id":"product003",
-        "quantity":2
+        "buyer": "buyer001",
+        "order_id": "order001",
+        "product_id": [
+            "product002"
+        ],
+        "quantity": [
+            20
+        ],
+        "status": "shipped"
     }
 ]

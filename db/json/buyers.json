@@ -1,18 +1,22 @@
 [
     {
+        "email": "buyer1@gmail.com",
         "name": "abimanyu",
-        "username":"buyer001",
-        "email":"buyer1@gmail.com",
-        "password":"abimanyu",
-        "orders":["order001"],
-        "state":"tamilnadu"
+        "orders": [
+            "order001"
+        ],
+        "password": "abimanyu",
+        "state": "tamilnadu",
+        "username": "buyer001"
     },
     {
+        "email": "buyer2@gmail.com",
         "name": "yuvraj",
-        "username":"buyer002",
-        "email":"buyer2@gmail.com",
-        "password":"abimanyu",
-        "orders":["order002"],
-        "state":"tamilnadu"
+        "orders": [
+            "order002"
+        ],
+        "password": "abimanyu",
+        "state": "tamilnadu",
+        "username": "buyer002"
     }
 ]

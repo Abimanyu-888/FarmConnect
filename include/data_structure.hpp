@@ -1,11 +1,13 @@
-#ifndef USER_DATA_HPP
-#define USER_DATA_HPP
-#include<string>
-#include<vector>
+#ifndef DATA_STRUCTURE_HPP
+#define DATA_STRUCTURE_HPP
 #include "json.hpp"
+#include <string>
+#include <vector>
 #include <fstream>
 #include <cstdint>
 #include <stdexcept>
+#include <filesystem>
+#include <type_traits>
 
 struct farmer_data {
     std::string name;
@@ -15,10 +17,10 @@ struct farmer_data {
     std::vector<std::string> products;
     std::vector<std::string> orders;
     std::string state;
-    int Total_Revenue;
+    int Total_Revenue=0;
 
     farmer_data(const std::string& name,const std::string& username,const std::string& email,
-        const std::string& password,const std::string& state, int Total_Revenue=0,
+        const std::string& password,const std::string& state,int Total_Revenue=0,
         std::vector<std::string> products={}, std::vector<std::string> orders={}):
     name(name),username(username),
     email(email), 
@@ -37,21 +39,13 @@ struct buyer_data {
     std::vector<std::string> orders;
     std::string state;
     buyer_data(const std::string& name,const std::string& username,const std::string& email,
-        const std::string& password,const std::string& state):
+         const std::string& password, const std::string& state, std::vector<std::string> orders={}):
     name(name), 
     username(username),
     email(email),
     password(password),
-    state(state)
-    {}
-    buyer_data(const std::string& thename,const std::string& theusername,const std::string& theemail,
-        const std::string& thepassword,const std::string& thestate,const std::vector<std::string>& theorders):
-    name(thename), 
-    username(theusername),
-    email(theemail),
-    password(thepassword),
-    state(thestate),
-    orders(theorders)
+    state(state),
+    orders(std::move(orders))
     {}
 };
 struct product_data {
@@ -59,42 +53,89 @@ struct product_data {
     std::string product_name;
     std::string category;
     std::string owner;
-    int price = 0;
-    int stock = 0;
+    int price =0;
+    int stock =0;
     std::string unit;
     std::string about;
     std::string img_extension;
     
-    product_data(const std::string& theproduct_id,const std::string& thename,const std::string& thecategory,
-        const std::string& theowner,int theprice,int totalstock,
-        const std::string& theunit,const std::string& theabout,const std::string& extension):
-    product_id(theproduct_id), 
-    product_name(thename),
-    category(thecategory), 
-    owner(theowner),
-    price(theprice), 
+    product_data(const std::string& product_id,const std::string& name,const std::string& category,
+        const std::string& owner,const int& price,const int& totalstock,
+        const std::string& unit,const std::string& about,const std::string& extension):
+    product_id(product_id), 
+    product_name(name),
+    category(category), 
+    owner(owner),
+    price(price), 
     stock(totalstock),
-    unit(theunit), 
-    about(theabout),
+    unit(unit), 
+    about(about),
     img_extension(extension){}
 };
 struct order_data {
     std::string order_id;
-    std::string product_id;
-    int quantity = 0;
-    bool isEmpty = true;
+    std::vector<std::string> product_ids;
+    std::vector<int> quantity ;
+    std::string buyer;
+    std::string status;
     
-    order_data(const std::string& theorder_id,const std::string& theproduct_id,int thequantity):
-    order_id(theorder_id), product_id(theproduct_id),
-    quantity(thequantity), isEmpty(false) {}
+    order_data(const std::string& order_id,const std::vector<std::string>& product_ids,const std::vector<int>& quantity,
+        const std::string& buyer,const std::string& status):
+    order_id(order_id), product_ids(product_ids),
+    quantity(quantity),buyer(buyer),status(status) {}
 };
 struct email_data{
     std::string username;
     std::string email;
-    email_data(const std::string& username,const std::string email):
+    email_data(const std::string& username,const std::string& email):
     username(username),
     email(email){}
 };
+inline void to_json(nlohmann::json& j, const farmer_data& data) {
+    j = nlohmann::json{
+        {"name", data.name},
+        {"username", data.username},
+        {"email", data.email},
+        {"password", data.password},
+        {"products", data.products},
+        {"orders", data.orders},
+        {"state",data.state},
+        {"Total_Revenue",data.Total_Revenue}
+    };
+}
+inline void to_json(nlohmann::json& j, const buyer_data& data) {
+    j = nlohmann::json{
+        {"name", data.name},
+        {"username", data.username},
+        {"email", data.email},
+        {"password", data.password},
+        {"orders", data.orders},
+        {"state",data.state},
+    };
+}
+inline void to_json(nlohmann::json& j, const product_data& data) {
+    j = nlohmann::json{
+        {"product_id", data.product_id},
+        {"product_name",data.product_name},
+        {"category", data.category},
+        {"owner", data.owner},
+        {"price", data.price},
+        {"stock", data.stock},
+        {"unit", data.unit},
+        {"about",data.about},
+        {"img_extension",data.img_extension}
+    };
+}
+inline void to_json(nlohmann::json& j, const order_data& data) {
+    j = nlohmann::json{
+        {"order_id", data.order_id},
+        {"product_id", data.product_ids},
+        {"quantity", data.quantity},
+        {"buyer",data.buyer},
+        {"status",data.status}
+    };
+}
+
 
 template<class T>
 struct IdType;
@@ -159,7 +200,8 @@ struct jsonData<product_data>{
 template<>
 struct jsonData<order_data>{
     static order_data* create(nlohmann::json& data){
-        return new order_data(data["order_id"],data["product_id"],data["quantity"]);
+        return new order_data(data["order_id"],data["product_id"].get<std::vector<std::string>>(),data["quantity"].get<std::vector<int>>(),
+                                data["buyer"],data["status"]);
     }
 };
 template<>
@@ -168,6 +210,9 @@ struct jsonData<email_data>{
         return new email_data(data["username"],data["email"]);
     }
 };
+
+template<class T, class... Ts>
+constexpr bool is_any_of = (std::is_same_v<T, Ts> || ...);
 
 template <class dataType>
 class Hash_Table{
@@ -178,6 +223,7 @@ class Hash_Table{
     };
     link** ptr_arr;
     int size;
+    std::string path;
     uint32_t fnv1a(std::string uid){
         const uint32_t bais=2166136261u;
         const uint32_t prime=16777619u;
@@ -195,8 +241,7 @@ public:
             ptr_arr[i] = nullptr;
         }
     }
-    Hash_Table(int size,std::string path){
-        this->size=size;
+    Hash_Table(int size,std::string path):size(size),path(path){
         ptr_arr=new link*[size];
         for (int i = 0; i < size; ++i) {
             ptr_arr[i] = nullptr;
@@ -205,6 +250,7 @@ public:
         load_from_json(path);
     }
     void load_from_json(std::string path){
+        this->path=path;
         std::ifstream file(path);
         if (!file.is_open()) {
             throw std::runtime_error("Could not open file: " + path);
@@ -212,7 +258,7 @@ public:
         nlohmann::json data;
         file>>data;
         for(auto& item:data){
-            dataType* node_data=jsonData<dataType>::create(item);
+            dataType* node_data = jsonData<dataType>::create(item);
             this->add(node_data);
         }
     }
@@ -258,13 +304,26 @@ public:
         delete node;
     }  
     ~Hash_Table(){
+        nlohmann::json json_array = nlohmann::json::array();
+        constexpr bool should_save=is_any_of<dataType, farmer_data, buyer_data, order_data, product_data>;
         for(int i=0;i<size;i++){
-            link* curr1=ptr_arr[i];
-            while(curr1){
-                link* next=curr1->next;
-                delete curr1->data;
-                delete curr1;
-                curr1=next;
+            link* curr=ptr_arr[i];
+            while(curr){
+                if constexpr (should_save) {
+                    json_array.push_back(*(curr->data));
+                }
+                link* nextNode= curr->next;
+                nextNode=curr->next;
+                delete curr->data;
+                delete curr;
+                curr=nextNode;
+            }
+        }
+        if constexpr (should_save ) {
+            if(!path.empty()){
+                std::ofstream jsonfile(path);
+                jsonfile << json_array.dump(4);
+                jsonfile.close();
             }
         }
         delete[] ptr_arr;

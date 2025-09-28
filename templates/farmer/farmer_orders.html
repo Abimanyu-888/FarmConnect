@@ -27,7 +27,7 @@
                     <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" /></svg>
                     My Products
                 </a>
-                <a href="#" class="nav-link active">
+                <a href="/farmer/orders/all" class="nav-link active">
                     <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 12h16.5m-16.5 3.75h16.5M3.75 19.5h16.5M5.625 4.5h12.75a1.875 1.875 0 010 3.75H5.625a1.875 1.875 0 010-3.75z" /></svg>
                     Orders
                 </a>
@@ -50,10 +50,10 @@
                 <div class="card">
                     <div class="tabs-container">
                         <nav class="tabs-nav" aria-label="Tabs">
-                            <a href="#" class="tab-link active">All Orders</a>
-                            <a href="#" class="tab-link">Pending</a>
-                            <a href="#" class="tab-link">Shipped</a>
-                            <a href="#" class="tab-link">Delivered</a>
+                            <a href="/farmer/orders/all" class="tab-link {{#all}}active{{/all}}">All Orders</a>
+                            <a href="/farmer/orders/pending" class="tab-link {{#pending}}active{{/pending}}">Pending</a>
+                            <a href="/farmer/orders/shipped" class="tab-link {{#shipped}}active{{/shipped}}">Shipped</a>
+                            <a href="/farmer/orders/delivered" class="tab-link {{#delivered}}active{{/delivered}}">Delivered</a>
                         </nav>
                     </div>
 
@@ -63,75 +63,27 @@
                                 <tr>
                                     <th>Order ID</th>
                                     <th>Buyer</th>
-                                    <th>Date</th>
+
                                     <th>Total</th>
                                     <th>Status</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
+                                {{#order_list}}
                                 <tr>
-                                    <td data-label="Order ID">#FC5892</td>
-                                    <td data-label="Buyer">Green Grocers Inc.</td>
-                                    <td data-label="Date">Aug 15, 2025</td>
-                                    <td data-label="Total" class="font-semibold">$450.00</td>
+                                    <td data-label="Order ID">{{order_id}}</td>
+                                    <td data-label="Buyer">{{buyer}}</td>
+
+                                    <td data-label="Total" class="font-semibold">₹{{total}}</td>
                                     <td data-label="Status">
-                                        <span class="status-badge status-shipped">Shipped</span>
+                                        <span class="status-badge status-{{status}}">{{status}}</span>
                                     </td>
                                     <td data-label="Actions" class="table-actions">
-                                        <a href="#" class="action-link">View</a>
+                                        <a href="/farmer/orders/view/{{order_id}}" class="action-link">View</a>
                                     </td>
                                 </tr>
-                                <tr>
-                                    <td data-label="Order ID">#FC5891</td>
-                                    <td data-label="Buyer">FreshMart</td>
-                                    <td data-label="Date">Aug 14, 2025</td>
-                                    <td data-label="Total" class="font-semibold">$120.50</td>
-                                    <td data-label="Status">
-                                        <span class="status-badge status-pending">Pending</span>
-                                    </td>
-                                    <td data-label="Actions" class="table-actions">
-                                        <a href="#" class="action-link">View</a>
-                                        <a href="#" class="action-link link-update">Update</a>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td data-label="Order ID">#FC5890</td>
-                                    <td data-label="Buyer">Local Eats Restaurant</td>
-                                    <td data-label="Date">Aug 14, 2025</td>
-                                    <td data-label="Total" class="font-semibold">$300.00</td>
-                                    <td data-label="Status">
-                                        <span class="status-badge status-delivered">Delivered</span>
-                                    </td>
-                                     <td data-label="Actions" class="table-actions">
-                                        <a href="#" class="action-link">View</a>
-                                    </td>
-                                </tr>
-                                 <tr>
-                                    <td data-label="Order ID">#FC5889</td>
-                                    <td data-label="Buyer">SuperValue Market</td>
-                                    <td data-label="Date">Aug 13, 2025</td>
-                                    <td data-label="Total" class="font-semibold">$890.25</td>
-                                    <td data-label="Status">
-                                        <span class="status-badge status-canceled">Canceled</span>
-                                    </td>
-                                     <td data-label="Actions" class="table-actions">
-                                        <a href="#" class="action-link">View</a>
-                                    </td>
-                                </tr>
-                                 <tr>
-                                    <td data-label="Order ID">#FC5888</td>
-                                    <td data-label="Buyer">Farm Fresh Co.</td>
-                                    <td data-label="Date">Aug 12, 2025</td>
-                                    <td data-label="Total" class="font-semibold">$215.75</td>
-                                    <td data-label="Status">
-                                        <span class="status-badge status-processing">Processing</span>
-                                    </td>
-                                    <td data-label="Actions" class="table-actions">
-                                        <a href="#" class="action-link">View</a>
-                                        <a href="#" class="action-link link-update">Update</a>
-                                    </td>
-                                </tr>
+                                {{/order_list}}
                             </tbody>
                         </table>
                     </div>
