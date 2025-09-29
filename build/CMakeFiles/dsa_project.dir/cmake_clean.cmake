@@ -1,6 +1,8 @@
 file(REMOVE_RECURSE
   "CMakeFiles/dsa_project.dir/main.cpp.o"
   "CMakeFiles/dsa_project.dir/main.cpp.o.d"
+  "CMakeFiles/dsa_project.dir/src/buyer_routes.cpp.o"
+  "CMakeFiles/dsa_project.dir/src/buyer_routes.cpp.o.d"
   "CMakeFiles/dsa_project.dir/src/farmer_routes.cpp.o"
   "CMakeFiles/dsa_project.dir/src/farmer_routes.cpp.o.d"
   "CMakeFiles/dsa_project.dir/src/helper.cpp.o"

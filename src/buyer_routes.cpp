@@ -36,19 +36,60 @@ void registerBuyerRoutes(crow::App<crow::CookieParser, Session>& app,Hash_Table<
             std::string thepath = "/db/images/" + data->cart[i];
             product_list.emplace_back(crow::json::wvalue{
                 {"product_name",prod_data->product_name},
-                {"product_id",prod_data->product_id}
+                {"product_id",prod_data->product_id},
                 {"price",prod_data->price},
                 {"quantity",data->quantity[i]},
                 {"unit",prod_data->unit},
                 {"sub_total",(prod_data->price)*(data->quantity[i])},
                 {"file_path",thepath + prod_data->img_extension}
             });
-            total+=(prod_data->price)*(orderData->quantity[i]);
+            total+=(prod_data->price)*(data->quantity[i]);
         }
         ctx["product_list"]=std::move(product_list);
         ctx["total"]=total;
 
-        auto page = crow::mustache::load("buyer/buyer_home.html");
+        auto page = crow::mustache::load("buyer/cart.html");
         return crow::response(page.render(ctx));
+    });
+    CROW_ROUTE(app, "/buyer/remove_from_cart/<string>")([&app,&buyerTable](const crow::request& req,const std::string& prod_id) -> crow::response {
+        auto& session = app.get_context<Session>(req);
+        std::string user_type = session.get<std::string>("user_type");
+        
+        if (user_type != "Buyer") {
+            crow::response res(303);
+            res.add_header("Location", "/error");
+            return res;
+        }
+        std::string username = session.get<std::string>("username");
+        buyer_data* data=buyerTable.find(username);
+        data->cart.erase(std::remove(data->cart.begin(),data->cart.end(),prod_id),data->cart.end());
+        crow::response res;
+        res.code = 302;
+        res.set_header("Location", "/buyer/cart");
+        return res;
+    });
+    CROW_ROUTE(app, "/buyer/profile")([&app,&buyerTable](const crow::request& req) -> crow::response {
+        auto& session = app.get_context<Session>(req);
+        std::string user_type = session.get<std::string>("user_type");
+        
+        if (user_type != "Buyer") {
+            crow::response res(303);
+            res.add_header("Location", "/error");
+            return res;
+        }
+        std::string username = session.get<std::string>("username");
+        buyer_data* data=buyerTable.find(username);
+        auto page = crow::mustache::load("buyer/profile.html");
+        return crow::response(page.render());
+    });
+    CROW_ROUTE(app, "/buyer/updata_cart")([&app,&buyerTable](const crow::request& req) -> crow::response {
+        auto& session = app.get_context<Session>(req);
+        std::string user_type = session.get<std::string>("user_type");
+        
+        if (user_type != "Buyer") {
+            crow::response res(303);
+            res.add_header("Location", "/error");
+            return res;
+        }
     });
 }

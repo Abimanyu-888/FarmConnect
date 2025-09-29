@@ -30,7 +30,7 @@
                     <a href="#" class="action-link">
                         <i class="fas fa-shopping-cart fa-lg"></i>
                     </a>
-                    <a href="#" class="action-link">
+                    <a href="/buyer/profile" class="action-link">
                         <i class="fas fa-user-circle fa-lg"></i>
                     </a>
                 </div>
@@ -57,7 +57,7 @@
             
             <div class="cart-layout">
                 
-                <form class="cart-items-section">
+                <form class="cart-items-section" action="/buyer/update_cart",method="POST">
                     <div class="cart-header">
                         <div class="header-product">Product</div>
                         <div class="header-price">Price</div>
@@ -80,7 +80,7 @@
                            <input type="number" id="quantity" value="{{quantity}}" min="1" class="quantity-input" name="quantity">
                         </div>
                         <div class="item-total">
-                            {{sub_total}}
+                            ₹{{sub_total}}
                         </div>
                         <div class="item-action">
                            <a href="/buyer/remove_from_cart/{{product_id}}" class="remove-item"><i class="fas fa-trash-alt"></i></a>
@@ -91,7 +91,7 @@
 
                     <div class="cart-actions">
                         <a href="#" class="continue-shopping-link"><i class="fas fa-arrow-left"></i> Continue Shopping</a>
-                        <button type="submit" class="update-cart-button">Update Cart</button>
+                        <a type="submit" class="update-cart-button">Update Cart</a>
                     </div>
                 </form>
 
@@ -102,7 +102,7 @@
                         <div class="summary-total">
                             <div class="total-row">
                                 <span>Total</span>
-                                <span class="total-price" id="summary-total">{{total}}</span>
+                                <span class="total-price" id="summary-total">₹{{total}}</span>
                             </div>
                         </div>
                         <button class="checkout-button">

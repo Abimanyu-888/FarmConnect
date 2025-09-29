@@ -193,7 +193,8 @@ template<>
 struct jsonData<buyer_data>{
     static buyer_data* create(nlohmann::json& data){
         return new buyer_data(data["name"],data["username"],data["email"],
-                             data["password"],data["state"],data["orders"].get<std::vector<std::string>>());
+                             data["password"],data["state"],data["orders"].get<std::vector<std::string>>(),
+                             data["cart"].get<std::vector<std::string>>(),data["quantity"].get<std::vector<int>>());
     }
 };
 template<>

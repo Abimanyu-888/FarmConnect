@@ -8,9 +8,10 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
-  "/Users/macbookm2/Downloads/programming/projects/Farmer-to-vendor/main.cpp" "CMakeFiles/dsa_project.dir/main.cpp.o" "gcc" "CMakeFiles/dsa_project.dir/main.cpp.o.d"
-  "/Users/macbookm2/Downloads/programming/projects/Farmer-to-vendor/src/farmer_routes.cpp" "CMakeFiles/dsa_project.dir/src/farmer_routes.cpp.o" "gcc" "CMakeFiles/dsa_project.dir/src/farmer_routes.cpp.o.d"
-  "/Users/macbookm2/Downloads/programming/projects/Farmer-to-vendor/src/helper.cpp" "CMakeFiles/dsa_project.dir/src/helper.cpp.o" "gcc" "CMakeFiles/dsa_project.dir/src/helper.cpp.o.d"
+  "/Users/citadel/Downloads/programming/Project/FarmConnect/main.cpp" "CMakeFiles/dsa_project.dir/main.cpp.o" "gcc" "CMakeFiles/dsa_project.dir/main.cpp.o.d"
+  "/Users/citadel/Downloads/programming/Project/FarmConnect/src/buyer_routes.cpp" "CMakeFiles/dsa_project.dir/src/buyer_routes.cpp.o" "gcc" "CMakeFiles/dsa_project.dir/src/buyer_routes.cpp.o.d"
+  "/Users/citadel/Downloads/programming/Project/FarmConnect/src/farmer_routes.cpp" "CMakeFiles/dsa_project.dir/src/farmer_routes.cpp.o" "gcc" "CMakeFiles/dsa_project.dir/src/farmer_routes.cpp.o.d"
+  "/Users/citadel/Downloads/programming/Project/FarmConnect/src/helper.cpp" "CMakeFiles/dsa_project.dir/src/helper.cpp.o" "gcc" "CMakeFiles/dsa_project.dir/src/helper.cpp.o.d"
   )
 
 # Targets to which this target links which contain Fortran sources.
