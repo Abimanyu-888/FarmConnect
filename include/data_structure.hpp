@@ -264,6 +264,12 @@ public:
             throw std::runtime_error("Could not open file: " + path);
         }
         nlohmann::json data;
+        try {
+            file >> data;
+        } catch (nlohmann::json::parse_error& e) {
+            // Handle bad JSON
+            throw std::runtime_error("Failed to parse JSON: " + std::string(e.what()));
+        }
         file>>data;
         for(auto& item:data){
             dataType* node_data = jsonData<dataType>::create(item);

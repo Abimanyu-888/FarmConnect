@@ -82,14 +82,14 @@ void registerBuyerRoutes(crow::App<crow::CookieParser, Session>& app,Hash_Table<
         auto page = crow::mustache::load("buyer/profile.html");
         return crow::response(page.render());
     });
-    CROW_ROUTE(app, "/buyer/updata_cart")([&app,&buyerTable](const crow::request& req) -> crow::response {
-        auto& session = app.get_context<Session>(req);
-        std::string user_type = session.get<std::string>("user_type");
+    // CROW_ROUTE(app, "/buyer/updata_cart")([&app,&buyerTable](const crow::request& req) -> crow::response {
+    //     auto& session = app.get_context<Session>(req);
+    //     std::string user_type = session.get<std::string>("user_type");
         
-        if (user_type != "Buyer") {
-            crow::response res(303);
-            res.add_header("Location", "/error");
-            return res;
-        }
-    });
+    //     if (user_type != "Buyer") {
+    //         crow::response res(303);
+    //         res.add_header("Location", "/error");
+    //         return res;
+    //     }
+    // });
 }

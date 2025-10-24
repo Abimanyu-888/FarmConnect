@@ -9,6 +9,7 @@ using Session = crow::SessionMiddleware<crow::InMemoryStore>;
 
 #include <vector>
 #include <string>
+#include "include/inverted_index.hpp"
 
 
 
@@ -23,6 +24,8 @@ int main() {
     Hash_Table<email_data> emialMap(200);
     emialMap.load_from_json("db/json/farmers.json");
     emialMap.load_from_json("db/json/buyers.json");
+    inverted_index(1000,"db/json/inverted_index.json");
+
 
     crow::App<crow::CookieParser, Session> app;
 

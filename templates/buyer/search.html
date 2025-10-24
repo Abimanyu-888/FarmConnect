@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FarmConnect - Search Results</title>
+    <link rel="stylesheet" href="/static/css/buyer/search.css">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+</head>
+<body>
+    <header class="site-header">
+        <div class="header-container">
+            <div class="header-main">
+                <div class="header-logo">
+                    <a href="/buyer/home" class="logo-link">FarmConnect</a>
+                </div>
+
+                <div class="header-search">
+                    <div class="search-wrapper">
+                        <input type="search" placeholder="Search for fresh produce..." class="search-input" value="{{ query }}">
+                        <div class="search-icon">
+                            <i class="fas fa-search"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="header-actions">
+                    <a href="/buyer/cart" class="action-link">
+                        <i class="fas fa-shopping-cart fa-lg"></i>
+                    </a>
+                    <a href="/buyer/profile" class="action-link">
+                        <i class="fas fa-user-circle fa-lg"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <nav class="category-nav">
+            <div class="container">
+                <div class="category-links">
+                    <a href="#" class="category-link">All Products</a>
+                    <a href="#" class="category-link">Fresh Vegetables</a>
+                    <a href="#" class="category-link">Fruits</a>
+                    <a href="#" class="category-link">Dairy & Eggs</a>
+                    <a href="#" class="category-link">Grains</a>
+                    <a href="#" class="category-link">Organic</a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="site-content">
+
+        <section class="products-section">
+            <h2 class="section-title">Search Results for "{{ query }}"</h2>
+            <div class="product-grid">
+                {% for product in products %}
+                <div class="product-card">
+                    <a href="/product/{{ product.id }}" class="product-link">
+                        <img src="{{ product.image_url }}" alt="{{ product.name }}" class="product-image">
+                        <div class="product-info">
+                            <h3 class="product-title">{{ product.name }}</h3>
+                            <p class="product-description">{{ product.description }}</p>
+                            <div class="product-footer">
+                                <span class="product-price">${{ product.price }}/{{ product.unit }}</span>
+                            </div>
+                        </div>
+                    </a>
+                    <button class="add-to-cart-btn" onclick="addToCart('{{ product.id }}')">Add to Cart</button>
+                </div>
+                {% else %}
+                <p class="no-results">No products found matching your search. Try searching for "Tomato" or "Potato".</p>
+                {% endfor %}
+            </div>
+        </section>
+
+    </main>
+
+    <footer id="contact" class="site-footer-main">
+        <div class="container">
+            <div class="footer-grid">
+                <div>
+                    <h3>FarmConnect</h3>
+                    <p>Building a more sustainable and transparent food system, one connection at a time.</p>
+                </div>
+                <div>
+                    <h3>Founders</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">Abimanyu</a></li>
+                        <li><a href="#">Sriram</a></li>
+                        <li><a href="#">Yuvraj</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3>Connect With Us</h3>
+                    <p>FarmConnect@gmail.com</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
