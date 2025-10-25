@@ -1411,4 +1411,5 @@ CMakeFiles/dsa_project.dir/main.cpp.o: \
   /Users/citadel/Downloads/programming/Project/FarmConnect/include/json.hpp \
   /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/valarray \
   /Users/citadel/Downloads/programming/Project/FarmConnect/include/helper.hpp \
-  /Users/citadel/Downloads/programming/Project/FarmConnect/include/routes.hpp
+  /Users/citadel/Downloads/programming/Project/FarmConnect/include/routes.hpp \
+  /Users/citadel/Downloads/programming/Project/FarmConnect/include/inverted_index.hpp

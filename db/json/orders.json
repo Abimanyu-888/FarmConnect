@@ -12,6 +12,17 @@
     },
     {
         "buyer": "buyer001",
+        "order_id": "XPe9Tp9Z",
+        "product_id": [
+            "product001"
+        ],
+        "quantity": [
+            1
+        ],
+        "status": "pending"
+    },
+    {
+        "buyer": "buyer001",
         "order_id": "order001",
         "product_id": [
             "product002"

@@ -55,7 +55,8 @@ private:
     void load_from_json(){
         std::ifstream file(path);
         if (!file.is_open()) {
-            throw std::runtime_error("Could not open file: " + path);
+            std::cerr << "Error: Could not open file to save inverted index: " << path << std::endl;
+            return; 
         }
         nlohmann::json data;
         try {
@@ -213,15 +214,13 @@ private:
         }
     }
 public:
-    inverted_index(int size=1000,std::string path):size(size),path(path){
+    inverted_index(std::string path,int size=1000):size(size),path(path){
         ptr_arr=new link*[size];
         for (int i = 0; i < size; ++i) {
             ptr_arr[i] = nullptr;
         }
         load_from_json();
     }
-
-    
     void add(product_data* data){
         if (data == nullptr) return; 
         add_string(data->about,data->product_id);

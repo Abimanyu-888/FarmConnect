@@ -223,7 +223,7 @@ button {
     flex-direction: column;
     flex-grow: 1;
 }
-.product-image {
+.product-card-img {
     width: 100%;
     height: 200px;
     object-fit: cover;
@@ -351,3 +351,24 @@ button {
     }
 }
 
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+.in-cart-btn {
+    background-color: var(--color-gray-200);
+    color: var(--color-gray-500);
+    border: none;
+    padding: 0.6rem 1.2rem;
+    border-radius: 0.5rem;
+    cursor: not-allowed;
+    font-weight: 600;
+    margin: 0.75rem;
+}

@@ -47,7 +47,7 @@
                     </div>
                 </header>
 
-                <form class="settings-panel" action="/farmer/change_password" method="POST">
+                <form class="settings-panel" id="password-change-form" action="/change_password" method="POST">
                     <div class="settings-section">
                         <h2 class="section-title">Profile Information</h2>
                         <p class="section-description">Update your personal and farm details.</p>
@@ -73,15 +73,10 @@
 
                     <div class="settings-section">
                         <h2 class="section-title">Change Password</h2>
-                        <div class="form-grid">
-                             <div class="form-group">
-                                <label for="currentPassword" class="form-label">Current Password</label>
-                                <input type="password" id="currentPassword" class="form-input">
-                            </div>
-                             <div class="form-group">
-                                <label for="newPassword" class="form-label">New Password</label>
-                                <input type="password" id="newPassword" class="form-input">
-                            </div>
+                        <div class="pass-section">
+                             <input type="password" id="curr_password" name="curr_password" placeholder="Current Password" class="form-input">
+                             <input type="password" id="new_password" name="new_password" placeholder="New Password" class="form-input">
+                             <input type="password" id="cnf_password" name="cnf_password" placeholder="Confirm New Password" class="form-input">
                         </div>
                     </div>
 
@@ -105,3 +100,29 @@
 
 </body>
 </html>
+<script>
+    // Wait for the DOM to be fully loaded
+    document.addEventListener("DOMContentLoaded", function() {
+      
+      // Select the form by its new ID
+      const passwordForm = document.getElementById("password-change-form");
+    
+      if (passwordForm) {
+        // Listen for the "submit" event on the form
+        passwordForm.addEventListener("submit", function (e) {
+          
+          // Get the values from the correct input IDs
+          const newPassword = document.getElementById("new_password").value;
+          const confirmPassword = document.getElementById("cnf_password").value;
+    
+          // Check if the two new passwords match
+          if (newPassword !== confirmPassword) {
+            e.preventDefault(); // Stop the form from submitting
+            alert("New passwords do not match!");
+          }
+          // If they do match, the script does nothing,
+          // and the form submits normally.
+        });
+      }
+    });
+</script>   

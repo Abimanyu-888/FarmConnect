@@ -17,6 +17,14 @@
     --color-gray-700: #374151;
     --color-gray-800: #1F2937;
     --color-white: #FFFFFF;
+    --border-color-light: #e5e7eb; /* gray-200 */
+    --border-color-default: #d1d5db; /* gray-300 */
+
+    --color-bg-body: #f9fafb; /* gray-50 */
+    --color-bg-card: #ffffff;
+    --color-bg-hover: #f3f4f6; /* gray-100 */
+    --color-bg-input: #f9fafb; /* gray-50 */
+    --color-focus-ring: #22c55e;
 }
 
 /* General Body and Resets (Synced with home.css) */
@@ -37,7 +45,6 @@ img { max-width: 100%; height: auto; display: block; }
 button { border: none; cursor: pointer; font-family: 'Inter', sans-serif; }
 .container { max-width: 1280px; margin-left: auto; margin-right: auto; padding-left: 1rem; padding-right: 1rem; }
 .hidden { display: none; }
-
 /* --- Header (Synced with home.css) --- */
 .header-container{ max-width: 1000px; margin-left: auto; margin-right: auto; padding-left: 1rem; padding-right: 1rem; }
 .site-header { background-color: var(--color-white); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1); position: sticky; top: 0; z-index: 50; }
@@ -168,4 +175,60 @@ button { border: none; cursor: pointer; font-family: 'Inter', sans-serif; }
     .footer-grid {
         grid-template-columns: 1fr;
     }
+}
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+.form-label {
+    display: block;
+    font-size: 0.875rem; /* text-sm */
+    font-weight: 500; /* font-medium */
+    color: #374151; /* gray-700 */
+}
+
+.form-input {
+    margin-top: 0.25rem; /* mt-1 */
+    display: block;
+    width: 100%;
+    padding: 0.5rem 1rem; /* px-4 py-2 */
+    background-color: var(--color-bg-card);
+    border: 1px solid var(--border-color-default);
+    border-radius: 0.5rem; /* rounded-lg */
+    box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    font-size: 0.875rem; /* sm:text-sm */
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+
+.form-input:focus {
+    outline: none;
+    border-color: transparent;
+    box-shadow: 0 0 0 2px var(--color-focus-ring);
+}
+/* New group container to replace .quantity-selector layout */
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+/* Constrain the width of the quantity input, as 100% is too wide */
+.product-details .form-input#quantity {
+    width: 10rem; /* 160px */
+}
+.in-cart-btn {
+    background-color: var(--color-gray-200);
+    color: var(--color-gray-500);
+    border: none;
+    padding: 0.6rem 1.2rem;
+    border-radius: 0.5rem;
+    cursor: not-allowed;
+    font-weight: 600;
+    margin: 0.75rem;
 }

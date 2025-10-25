@@ -8,6 +8,9 @@
 #include <stdexcept>
 #include <filesystem>
 #include <type_traits>
+#include <random>      
+#include <numeric>     
+#include <algorithm>
 
 struct farmer_data {
     std::string name;
@@ -227,11 +230,14 @@ class Hash_Table{
     struct link{
         dataType* data;
         link* next=nullptr;
-        link(dataType* data):data(data){}
+        size_t vector_index;
+        link(dataType* data, size_t index) : data(data), vector_index(index) {}
     };
     link** ptr_arr;
     int size;
     std::string path;
+    std::vector<dataType*> item_vector;
+    static std::mt19937 random_gen;
     uint32_t fnv1a(std::string uid){
         const uint32_t bais=2166136261u;
         const uint32_t prime=16777619u;
@@ -248,29 +254,33 @@ public:
         for (int i = 0; i < size; ++i) {
             ptr_arr[i] = nullptr;
         }
+        item_vector.reserve(size/5);
     }
     Hash_Table(int size,std::string path):size(size),path(path){
         ptr_arr=new link*[size];
         for (int i = 0; i < size; ++i) {
             ptr_arr[i] = nullptr;
         }
-
+        item_vector.reserve(size/5);
         load_from_json(path);
     }
     void load_from_json(std::string path){
         this->path=path;
         std::ifstream file(path);
         if (!file.is_open()) {
-            throw std::runtime_error("Could not open file: " + path);
+            std::cerr << "Error: Could not open file to save inverted index: " << path << std::endl;
+            return; 
         }
         nlohmann::json data;
         try {
             file >> data;
+
         } catch (nlohmann::json::parse_error& e) {
             // Handle bad JSON
+            std::cout<<"Failed to parse JSON: " + std::string(e.what());
             throw std::runtime_error("Failed to parse JSON: " + std::string(e.what()));
         }
-        file>>data;
+
         for(auto& item:data){
             dataType* node_data = jsonData<dataType>::create(item);
             this->add(node_data);
@@ -283,9 +293,11 @@ public:
             delete node_data;
             return;
         }
+        item_vector.push_back(node_data);
+        size_t vector_idx = item_vector.size() - 1;
 
         uint32_t index=fnv1a(uid)%size;
-        link* newnode=new link(node_data);
+        link* newnode=new link(node_data,vector_idx);
         if(ptr_arr[index]){
             newnode->next = ptr_arr[index];
             ptr_arr[index] = newnode;
@@ -312,11 +324,74 @@ public:
             node=node->next;
         }
         if (node == nullptr) return; 
+
+        dataType* data_to_delete = node->data;
+        size_t index_to_delete = node->vector_index;
+        
+        // 3. Get the *last* item in the vector
+        dataType* last_item_data = item_vector.back();
+
+        // 4. Perform swap-and-pop in the vector
+        
+        // Edge case: if we are deleting the last item, just pop.
+        if (data_to_delete == last_item_data) {
+            item_vector.pop_back();
+        } 
+        // Normal case: swap last item into deleted item's slot
+        else {
+            // Move last item into the slot of the item to be deleted
+            item_vector[index_to_delete] = last_item_data;
+            item_vector.pop_back(); // Remove the (now duplicate) last item
+
+            // 5. Update the moved item's index in the *hashtable*
+            std::string last_item_uid = IdType<dataType>::get(*last_item_data);
+            uint32_t last_item_hash_index = fnv1a(last_item_uid) % size;
+            link* last_item_node = ptr_arr[last_item_hash_index];
+            
+            // Find the link node for the (now moved) last item
+            while (last_item_node != nullptr && last_item_node->data != last_item_data) {
+                last_item_node = last_item_node->next;
+            }
+            
+            // Update its stored index
+            if (last_item_node != nullptr) {
+                last_item_node->vector_index = index_to_delete;
+            } else {
+                // This is a critical error, indicates data inconsistency
+                // In a production system, you would log this.
+                std::cerr << "CRITICAL ERROR: Hashtable-vector desync on remove!" << std::endl;
+            }
+        }
+
         if(parent) parent->next=node->next;
         else ptr_arr[index]=node->next;
         delete node->data;
         delete node;
     }  
+    std::vector<dataType*> getRandomProducts(int N) {
+        std::vector<dataType*> results;
+        if (N <= 0 || item_vector.empty()) {
+            return results;
+        }
+
+        // Create a vector of indices: [0, 1, 2, ..., size-1]
+        std::vector<size_t> indices(item_vector.size());
+        std::iota(indices.begin(), indices.end(), 0); // Fills with 0, 1, 2...
+
+        // Shuffle the indices using our static random generator
+        std::shuffle(indices.begin(), indices.end(), random_gen);
+
+        // Determine how many items to return
+        int count = std::min(N, (int)item_vector.size());
+        results.reserve(count);
+
+        // Pick the first 'count' items from the shuffled indices
+        for (int i = 0; i < count; ++i) {
+            results.push_back(item_vector[indices[i]]);
+        }
+
+        return results;
+    }
     ~Hash_Table(){
         nlohmann::json json_array = nlohmann::json::array();
         constexpr bool should_save=is_any_of<dataType, farmer_data, buyer_data, order_data, product_data>;
@@ -343,4 +418,6 @@ public:
         delete[] ptr_arr;
     }
 };
+template <class dataType>
+std::mt19937 Hash_Table<dataType>::random_gen(std::random_device{}());
 #endif

@@ -6,20 +6,20 @@
     <title>FarmConnect - Shopping Cart</title>
     <link rel="stylesheet" href="/static/css/buyer/cart.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
-
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-
     <header class="site-header">
+        <form action="/buyer/search" method="POST">
         <div class="header-container">
             <div class="header-main">
                 <div class="header-logo">
-                    <a href="#" class="logo-link">FarmConnect</a>
+                    <a href="/" class="logo-link">FarmConnect</a>
                 </div>
 
                 <div class="header-search">
                     <div class="search-wrapper">
-                        <input type="search" placeholder="Search for fresh produce..." class="search-input">
+                        <input type="search" id="search" name="search" placeholder="Search for fresh produce..." class="search-input">
                         <div class="search-icon">
                             <i class="fas fa-search"></i>
                         </div>
@@ -40,24 +40,25 @@
         <nav class="category-nav">
             <div class="container">
                 <div class="category-links">
-                    <a href="#" class="category-link">All Products</a>
-                    <a href="#" class="category-link">Fresh Vegetables</a>
-                    <a href="#" class="category-link">Fruits</a>
-                    <a href="#" class="category-link">Dairy & Eggs</a>
-                    <a href="#" class="category-link">Grains</a>
-                    <a href="#" class="category-link">Organic</a>
+                    <a href="/buyer/home" class="category-link">All Products</a>
+                    <a href="/buyer/search?search=Fresh Vegetables" class="category-link">Fresh Vegetables</a>
+                    <a href="/buyer/search?search=fruits" class="category-link">Fruits</a>
+                    <a href="/buyer/search?search=Dairy eggs" class="category-link">Dairy & Eggs</a>
+                    <a href="/buyer/search?search=grains" class="category-link">Grains</a>
+                    <a href="/buyer/search?search=Organic" class="category-link">Organic</a>
                 </div>
             </div>
         </nav>
     </header>
+    </form>
+    <button type="submit" class="visually-hidden">Search</button>
 
     <main class="container main-content">
         <div class="card">
             <h1 class="main-heading">Your Shopping Cart</h1>
-            
             <div class="cart-layout">
                 
-                <form class="cart-items-section" action="/buyer/update_cart",method="POST">
+                <form class="cart-items-section" action="/buyer/update_cart" method="POST">
                     <div class="cart-header">
                         <div class="header-product">Product</div>
                         <div class="header-price">Price</div>
@@ -66,32 +67,32 @@
                         <div class="header-action"></div>
                     </div>
 
-                    <!-- Cart Item 1 -->
-                    <div class="cart-item">
-                        {{#product_list}}
-                        <div class="product-details">
-                            <img src="{{file_path}}"  class="product-image" onerror="this.onerror=null;this.src='https://placehold.co/400x300/fecaca/991b1b?text=Image+Failed';" >
-                            <h3 class="product-name">{{product_name}}</h3>
+                    {{#product_list}}
+                        <div class="cart-item" href="/buyer/product/{{product_id}}">
+                            <a class="product-details" href="/buyer/product/{{product_id}}">
+                                <img src="{{file_path}}"  class="product-image" onerror="this.onerror=null;this.src='https://placehold.co/400x300/fecaca/991b1b?text=Image+Failed';" >
+                                <h3 class="product-name">{{product_name}}</h3>
+                            </a>
+                            <div class="item-price" >
+                                {{price}} <span class="product-unit">/ lb</span>
+                            </div>
+                            <div class="item-quantity">
+                                <input type="hidden" name="product_id" value="{{product_id}}">
+                                <input type="number" id="quantity" value="{{quantity}}" min="1" class="quantity-input" name="quantity">
+                            </div>
+                            <div class="item-total">
+                                ₹{{sub_total}}
+                            </div>
+                            <div class="item-action">
+                            <a href="/buyer/remove_from_cart/{{product_id}}" class="remove-item"><i class="fas fa-trash-alt"></i></a>
+                            </div>
                         </div>
-                        <div class="item-price" >
-                            {{price}} <span class="product-unit">/ lb</span>
-                        </div>
-                        <div class="item-quantity">
-                           <input type="number" id="quantity" value="{{quantity}}" min="1" class="quantity-input" name="quantity">
-                        </div>
-                        <div class="item-total">
-                            ₹{{sub_total}}
-                        </div>
-                        <div class="item-action">
-                           <a href="/buyer/remove_from_cart/{{product_id}}" class="remove-item"><i class="fas fa-trash-alt"></i></a>
-                        </div>
-                        {{/product_list}}
-                    </div>
+                    {{/product_list}}
 
 
                     <div class="cart-actions">
-                        <a href="#" class="continue-shopping-link"><i class="fas fa-arrow-left"></i> Continue Shopping</a>
-                        <a type="submit" class="update-cart-button">Update Cart</a>
+                        <a href="javascript:history.back()" class="continue-shopping-link"><i class="fas fa-arrow-left"></i> Continue Shopping</a>
+                        <button type="submit" class="update-cart-button">Update Cart</button>
                     </div>
                 </form>
 
@@ -105,15 +106,18 @@
                                 <span class="total-price" id="summary-total">₹{{total}}</span>
                             </div>
                         </div>
-                        <button class="checkout-button">
+                        <form action="/buyer/checkout" method="POST">
+                        <button type="submit" class="checkout-button">
                             Proceed to Checkout
                         </button>
+                        </form>
                     </div>
                 </div>
 
             </div>
         </div>
     </main>
+
 
     <footer id="contact" class="site-footer-main">
         <div class="container">

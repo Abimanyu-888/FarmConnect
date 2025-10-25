@@ -9,17 +9,17 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
 </head>
 <body>
-
     <header class="site-header">
+        <form action="/buyer/search" method="POST">
         <div class="header-container">
             <div class="header-main">
                 <div class="header-logo">
-                    <a href="#" class="logo-link">FarmConnect</a>
+                    <a href="/" class="logo-link">FarmConnect</a>
                 </div>
 
                 <div class="header-search">
                     <div class="search-wrapper">
-                        <input type="search" placeholder="Search for fresh produce..." class="search-input">
+                        <input type="search" id="search" name="search" placeholder="Search for fresh produce..." class="search-input">
                         <div class="search-icon">
                             <i class="fas fa-search"></i>
                         </div>
@@ -40,102 +40,63 @@
         <nav class="category-nav">
             <div class="container">
                 <div class="category-links">
-                    <a href="#" class="category-link">All Products</a>
-                    <a href="#" class="category-link">Fresh Vegetables</a>
-                    <a href="#" class="category-link">Fruits</a>
-                    <a href="#" class="category-link">Dairy & Eggs</a>
-                    <a href="#" class="category-link">Grains</a>
-                    <a href="#" class="category-link">Organic</a>
+                    <a href="/buyer/home" class="category-link">All Products</a>
+                    <a href="/buyer/search?search=Fresh Vegetables" class="category-link">Fresh Vegetables</a>
+                    <a href="/buyer/search?search=fruits" class="category-link">Fruits</a>
+                    <a href="/buyer/search?search=Dairy eggs" class="category-link">Dairy & Eggs</a>
+                    <a href="/buyer/search?search=grains" class="category-link">Grains</a>
+                    <a href="/buyer/search?search=Organic" class="category-link">Organic</a>
                 </div>
             </div>
         </nav>
+        <button type="submit" class="visually-hidden">Search</button>
+        </form>
     </header>
 
     <main class="container page-content">
         
         <nav class="breadcrumbs" aria-label="Breadcrumb">
             <ol>
-                <li><a href="#">Home</a><i class="fas fa-angle-right separator"></i></li>
-                <li><a href="#">Vegetables</a><i class="fas fa-angle-right separator"></i></li>
-                <li>Fresh Tomatoes</li>
+                <li><a href="/buyer/home">Home</a><i class="fas fa-angle-right separator"></i></li>
+                <li><a href="/buyer/search?search={{category}}">{{category}}</a><i class="fas fa-angle-right separator"></i></li>
+                <li>{{name}}</li>
             </ol>
         </nav>
 
         <div class="card">
-            <div class="product-layout">
+            <form class="product-layout" action="/buyer/add_to_cart/{{product_id}}" method="POST">
                 <div class="product-gallery">
-                    <img id="main-product-image" src="https://images.unsplash.com/photo-1598170845058-32b9d6a5da37?q=80&w=1887&auto=format&fit=crop" alt="Tomatoes" class="main-image">
-                    <div class="thumbnail-container">
-                        <img src="https://images.unsplash.com/photo-1598170845058-32b9d6a5da37?q=80&w=1887&auto=format&fit=crop" alt="Thumbnail 1" class="thumbnail active">
-                        <img src="https://images.unsplash.com/photo-1561138723-16a12270a049?q=80&w=1887&auto=format&fit=crop" alt="Thumbnail 2" class="thumbnail">
-                        <img src="https://images.unsplash.com/photo-1588661644349-74012508535a?q=80&w=1887&auto=format&fit=crop" alt="Thumbnail 3" class="thumbnail">
-                    </div>
+                    <img class="product-card-img" src="{{file_path}}" alt="Tomatoes" onerror="this.onerror=null;this.src='https://placehold.co/400x300/fecaca/991b1b?text=Image+Failed';">
                 </div>
 
                 <div class="product-details">
-                    <h1 class="product-title">Fresh Tomatoes</h1>
-                    <div class="product-rating">
-                        <div class="stars">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star-half-alt"></i>
-                        </div>
-                        <a href="#reviews" class="review-link">12 Reviews</a>
-                    </div>
-                    <p class="product-seller">Sold by <a href="#">Green Valley Farms</a></p>
+                    <h1 class="product-title">{{name}}</h1>
+                    <p class="product-seller">Sold by <a href="#">{{farmer}}</a></p>
                     
-                    <p class="product-price">$2.99/lb</p>
+                    <p class="product-price">₹{{price}}/{{unit}}</p>
                     
-                    <p class="product-short-description">Vine-ripened and hand-picked at the peak of freshness. Grown using sustainable, organic methods, they are bursting with flavor and perfect for any dish.</p>
+                    <p class="product-short-description">{{about}}</p>
 
-                    <div class="product-tags">
-                        <span class="tag organic-tag">Organic</span>
-                        <span class="tag pesticide-tag">Pesticide-Free</span>
+
+                    <div class="form-group">
+                        <label for="quantity" class="form-label">Quantity (per {{unit}}):</label>
+                        <input type="number" id="quantity" name="quantity" placeholder="1" min="1" step="any" class="form-input" required>
                     </div>
-
-                    <div class="quantity-selector">
-                        <label for="quantity">Quantity:</label>
-                        <div class="quantity-input">
-                            <button>-</button>
-                            <input type="text" id="quantity" value="1">
-                            <button>+</button>
-                        </div>
-                    </div>
-
+                    {{#incart}}
                     <div class="product-actions">
-                        <button class="btn btn-primary">
+                        <button class="in-cart-btn" disabled>In Cart</button>
+                    </div>
+                    {{/incart}}
+                    {{^incart}}
+                    <div class="product-actions">
+                        <button type="submit" class="btn btn-primary">
                             <i class="fas fa-shopping-cart"></i>
                             Add to Cart
                         </button>
-                         <button class="btn btn-wishlist">
-                            <i class="fas fa-heart fa-lg"></i>
-                        </button>
                     </div>
+                    {{/incart}}
                 </div>
-            </div>
-        </div>
-
-        <div class="card info-tabs">
-            <div class="tab-header">
-                <nav class="tab-nav">
-                    <a href="#" class="tab-link tab-active">Description</a>
-                    <a href="#" class="tab-link">Farmer Info</a>
-                    <a href="#" id="reviews" class="tab-link">Reviews</a>
-                </nav>
-            </div>
-            <div class="tab-body">
-                <div class="tab-content" id="description-content">
-                    <p>Our tomatoes are cultivated in the nutrient-rich soils of Green Valley, ensuring a superior taste and quality. We follow strict organic farming practices, avoiding all synthetic pesticides and fertilizers. Each tomato is hand-selected to guarantee it meets our high standards for ripeness and flavor. They are ideal for fresh salads, robust pasta sauces, or as a simple, healthy snack.</p>
-                </div>
-                <div class="tab-content hidden" id="farmer-content">
-                    <p>Green Valley Farms has been a family-owned operation for over three generations. We are committed to sustainable agriculture and providing our community with the freshest, healthiest produce possible. We believe in transparency and a direct connection between the farm and your table.</p>
-                </div>
-                 <div class="tab-content hidden" id="reviews-content">
-                    <p>See what our customers have to say!</p>
-                </div>
-            </div>
+            </form>
         </div>
         
         <section class="related-products">
@@ -168,36 +129,6 @@
             </div>
         </div>
     </footer>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // Image Gallery Logic
-            const mainImage = document.getElementById('main-product-image');
-            const thumbnails = document.querySelectorAll('.thumbnail');
-            thumbnails.forEach(thumbnail => {
-                thumbnail.addEventListener('click', function() {
-                    mainImage.src = this.src;
-                    thumbnails.forEach(t => t.classList.remove('active'));
-                    this.classList.add('active');
-                });
-            });
-
-            // Tab Logic
-            const tabLinks = document.querySelectorAll('.tab-link');
-            const tabContents = document.querySelectorAll('.tab-content');
-            tabLinks.forEach((link, index) => {
-                link.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    tabLinks.forEach(l => l.classList.remove('tab-active'));
-                    link.classList.add('tab-active');
-                    
-                    tabContents.forEach(content => content.classList.add('hidden'));
-                    // We target by index as the IDs are not guaranteed to match the order
-                    tabContents[index].classList.remove('hidden');
-                });
-            });
-        });
-    </script>
 
 </body>
 </html>

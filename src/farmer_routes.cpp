@@ -11,7 +11,7 @@ int calculate_order_total(const order_data* order, Hash_Table<product_data>& pro
     return total;
 }
 void registerFarmerRoutes(crow::App<crow::CookieParser, Session>& app,Hash_Table<farmer_data>& farmerTable,
-                            Hash_Table<product_data>& productTable,Hash_Table<order_data>& orderTable,Hash_Table<buyer_data>& buyerTable) {
+                            Hash_Table<product_data>& productTable,Hash_Table<order_data>& orderTable,Hash_Table<buyer_data>& buyerTable,inverted_index& searcher) {
     CROW_ROUTE(app, "/farmer/dashboard")([&app,&farmerTable,&productTable,&orderTable](const crow::request& req) -> crow::response {
         auto& session = app.get_context<Session>(req);
         std::string user_type = session.get<std::string>("user_type");
@@ -76,7 +76,7 @@ void registerFarmerRoutes(crow::App<crow::CookieParser, Session>& app,Hash_Table
         for(std::string& prod_id:data->products){
             product_data* prod_data=productTable.find(prod_id);
             bool is_in_stock = (prod_data->stock > 0);
-            std::string thepath = "/db/images/" + prod_id;
+            std::string thepath = "/db/images/" + prod_id+prod_data->img_extension;
             product_list.emplace_back(crow::json::wvalue{
                 {"name", prod_data->product_name}, 
                 {"stock", prod_data->stock},
@@ -85,7 +85,7 @@ void registerFarmerRoutes(crow::App<crow::CookieParser, Session>& app,Hash_Table
                 {"price",prod_data->price},
                 {"id",prod_data->product_id},
                 {"is_in_stock", is_in_stock},
-                {"file_path",thepath + prod_data->img_extension}
+                {"file_path",thepath}
             });
         }
         ctx["product_list"]=std::move(product_list);
@@ -219,7 +219,7 @@ void registerFarmerRoutes(crow::App<crow::CookieParser, Session>& app,Hash_Table
         return crow::response(page.render());
     });
 
-    CROW_ROUTE(app,"/farmer/new_product").methods("POST"_method)([&app,&farmerTable,&productTable](const crow::request& req) -> crow::response {
+    CROW_ROUTE(app,"/farmer/new_product").methods("POST"_method)([&app,&farmerTable,&productTable,&searcher](const crow::request& req) -> crow::response {
         auto& session = app.get_context<Session>(req);
         std::string user_type = session.get<std::string>("user_type");
 
@@ -240,23 +240,24 @@ void registerFarmerRoutes(crow::App<crow::CookieParser, Session>& app,Hash_Table
 
         const auto& file_part = msg.get_part_by_name("file-upload");
     
-        std::string disposition = "";
-        auto it = file_part.headers.find("Content-Disposition");
-        if (it != file_part.headers.end()) {
-            disposition = it->second.value; 
+        std::string original_filename = "";
+        const auto& disposition_header = file_part.get_header_object("Content-Disposition");
+        auto filename_it = disposition_header.params.find("filename");
+        if (filename_it != disposition_header.params.end()) 
+        {
+            original_filename = filename_it->second;
         }
-
-        std::string original_filename;
-        size_t filename_pos = disposition.find("filename=\"");
-        if (filename_pos != std::string::npos) {
-            filename_pos += 10; // Move past 'filename="'
-            size_t filename_end_pos = disposition.find("\"", filename_pos);
-            if (filename_end_pos != std::string::npos) {
-                original_filename = disposition.substr(filename_pos, filename_end_pos - filename_pos);
-            }
+        std::string extension = "";
+        if (!original_filename.empty()) {
+            // Use std::filesystem to get the extension.
+            // .string() is important to convert from std::filesystem::path
+            extension = std::filesystem::path(original_filename).extension().string();
+        } else {
+            // Handle cases where no file or a file with no name is uploaded
+            // You might want to return an error here instead.
+            // For now, we'll proceed, but the extension will be empty.
+            std::cerr << "Warning: File uploaded with no filename." << std::endl;
         }
-
-        std::string extension = std::filesystem::path(original_filename).extension().string();
         std::string save_path = "db/images/" + id + extension;
 
         std::ofstream out_file(save_path, std::ios::binary);
@@ -269,7 +270,7 @@ void registerFarmerRoutes(crow::App<crow::CookieParser, Session>& app,Hash_Table
 
         farmer_data* farmerData = farmerTable.find(username);
         farmerData->products.push_back(id);
-
+        searcher.add(new_data);
         crow::response res;
         res.code = 302;
         res.set_header("Location", "/farmer/products");
@@ -298,7 +299,7 @@ void registerFarmerRoutes(crow::App<crow::CookieParser, Session>& app,Hash_Table
         auto page = crow::mustache::load("farmer/edit_product.html");
         return crow::response(page.render(ctx));
     });
-    CROW_ROUTE(app, "/farmer/delete_product/<string>")([&app,&farmerTable,&productTable](const crow::request& req,const std::string& id) -> crow::response {
+    CROW_ROUTE(app, "/farmer/delete_product/<string>")([&app,&farmerTable,&productTable,&searcher](const crow::request& req,const std::string& id) -> crow::response {
         auto& session = app.get_context<Session>(req);
         std::string user_type = session.get<std::string>("user_type");
 
@@ -312,21 +313,20 @@ void registerFarmerRoutes(crow::App<crow::CookieParser, Session>& app,Hash_Table
         farmer_data* farmerData = farmerTable.find(username);
 
         product_data* product=productTable.find(id);
-        if (farmerData) {
-            std::string image_filename = product->img_extension;
+        searcher.remove(product);
 
-            // 2. Check if there is an image filename associated with the product
-            std::string file_path = "db/images/" + id ;
+        // 2. Check if there is an image filename associated with the product
+        std::string file_path = "db/images/" + id+ product->img_extension;
 
-            // 3. Use std::filesystem::remove to delete the file
-            std::error_code ec;
-            std::filesystem::remove(file_path, ec);
+        // 3. Use std::filesystem::remove to delete the file
+        std::error_code ec;
+        std::filesystem::remove(file_path, ec);
 
-            if (ec) {
-                // Optional: Log an error if the file couldn't be removed
-                CROW_LOG_ERROR << "Failed to delete image file: " << file_path << " - " << ec.message();
-            }
+        if (ec) {
+            // Optional: Log an error if the file couldn't be removed
+            CROW_LOG_ERROR << "Failed to delete image file: " << file_path << " - " << ec.message();
         }
+        
 
         farmerData->products.erase(std::remove(farmerData->products.begin(), farmerData->products.end(), id), farmerData->products.end());
         productTable.remove(id);
@@ -336,7 +336,7 @@ void registerFarmerRoutes(crow::App<crow::CookieParser, Session>& app,Hash_Table
         return res;
     });
     
-    CROW_ROUTE(app, "/farmer/edit_product_post/<string>").methods("POST"_method)([&app,&productTable](const crow::request& req,const std::string& id) -> crow::response {
+    CROW_ROUTE(app, "/farmer/edit_product_post/<string>").methods("POST"_method)([&app,&productTable,&searcher](const crow::request& req,const std::string& id) -> crow::response {
         auto& session = app.get_context<Session>(req);
         std::string user_type = session.get<std::string>("user_type");
 
@@ -347,6 +347,20 @@ void registerFarmerRoutes(crow::App<crow::CookieParser, Session>& app,Hash_Table
         }
         crow::multipart::message msg(req);
         product_data* data=productTable.find(id);
+
+
+        // 2. Check if there is an image filename associated with the product
+        std::string file_path = "db/images/" + id+data->img_extension ;
+
+        // 3. Use std::filesystem::remove to delete the file
+        std::error_code ec;
+        std::filesystem::remove(file_path, ec);
+
+        if (ec) {
+            // Optional: Log an error if the file couldn't be removed
+            CROW_LOG_ERROR << "Failed to delete image file: " << file_path << " - " << ec.message();
+        }
+
         data->product_name=msg.get_part_by_name("productName").body;
         data->category=msg.get_part_by_name("category").body;
         data->about=msg.get_part_by_name("about").body;
@@ -356,32 +370,32 @@ void registerFarmerRoutes(crow::App<crow::CookieParser, Session>& app,Hash_Table
 
         const auto& file_part = msg.get_part_by_name("file-upload");
     
-        std::string disposition = "";
-        auto it = file_part.headers.find("Content-Disposition");
-        if (it != file_part.headers.end()) {
-            disposition = it->second.value; 
+        std::string original_filename = "";
+        const auto& disposition_header = file_part.get_header_object("Content-Disposition");
+        auto filename_it = disposition_header.params.find("filename");
+        if (filename_it != disposition_header.params.end()) 
+        {
+            original_filename = filename_it->second;
         }
-
-        std::string original_filename;
-        size_t filename_pos = disposition.find("filename=\"");
-        if (filename_pos != std::string::npos) {
-            filename_pos += 10; // Move past 'filename="'
-            size_t filename_end_pos = disposition.find("\"", filename_pos);
-            if (filename_end_pos != std::string::npos) {
-                original_filename = disposition.substr(filename_pos, filename_end_pos - filename_pos);
-            }
+        std::string extension = "";
+        if (!original_filename.empty()) {
+            // Use std::filesystem to get the extension.
+            // .string() is important to convert from std::filesystem::path
+            extension = std::filesystem::path(original_filename).extension().string();
+        } else {
+            // Handle cases where no file or a file with no name is uploaded
+            // You might want to return an error here instead.
+            // For now, we'll proceed, but the extension will be empty.
+            std::cerr << "Warning: File uploaded with no filename." << std::endl;
         }
-
-        std::string extension = std::filesystem::path(original_filename).extension().string();
-        std::string new_filename = id + extension;
-        std::string save_path = "db/images/" + new_filename;
+        std::string save_path = "db/images/" + id + extension;
 
         std::ofstream out_file(save_path, std::ios::binary);
         out_file.write(file_part.body.data(), file_part.body.size());
         out_file.close();
 
         data->img_extension=extension;
-
+        searcher.add(data);
         crow::response res(303); 
         res.add_header("Location", "/farmer/products");
         return res;

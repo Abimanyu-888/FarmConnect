@@ -1,33 +1,26 @@
 [
     {
-        "cart": [
-            "product001"
-        ],
+        "cart": [],
         "email": "buyer1@gmail.com",
         "name": "abimanyu",
         "orders": [
-            "order001"
+            "order001",
+            "XPe9Tp9Z"
         ],
         "password": "abimanyu",
-        "quantity": [
-            5
-        ],
+        "quantity": [],
         "state": "tamilnadu",
         "username": "buyer001"
     },
     {
-        "cart": [
-            "product003"
-        ],
+        "cart": [],
         "email": "buyer2@gmail.com",
         "name": "yuvraj",
         "orders": [
             "order002"
         ],
         "password": "abimanyu",
-        "quantity": [
-            5
-        ],
+        "quantity": [],
         "state": "tamilnadu",
         "username": "buyer002"
     }

@@ -18,9 +18,10 @@
         "email": "farmer1@gmail.com",
         "name": "abimanyu",
         "orders": [
-            "order001"
+            "order001",
+            "XPe9Tp9Z"
         ],
-        "password": "abimanyu",
+        "password": "12345678",
         "products": [
             "product001",
             "product002"

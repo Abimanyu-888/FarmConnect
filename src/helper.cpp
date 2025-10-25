@@ -8,22 +8,6 @@
 #include <algorithm>
 
 
-/**
- * @brief Generates a random, high-performance Version 4 UUID.
- *
- * This function is optimized for speed and an extremely low probability of
- * collision, making it ideal for generating unique product IDs in a
- * high-throughput system.
- *
- * It uses a thread_local Mersenne Twister engine (`std::mt19937`), which means
- * each thread gets its own independent random number generator. The generator
- * is seeded only once per thread using std::random_device to ensure a
- * high-quality, non-deterministic starting point. Subsequent calls within the
- * same thread are extremely fast as they use the already-seeded PRNG.
- *
- * @return A string formatted as a standard v4 UUID, e.g.,
- * "123e4567-e89b-42d3-a456-556642440000".
- */
 std::string generate_product_id() {
     // `thread_local` ensures that each thread has its own separate instance
     // of the generator. It's initialized only once per thread, making it

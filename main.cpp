@@ -24,15 +24,15 @@ int main() {
     Hash_Table<email_data> emialMap(200);
     emialMap.load_from_json("db/json/farmers.json");
     emialMap.load_from_json("db/json/buyers.json");
-    inverted_index(1000,"db/json/inverted_index.json");
+    inverted_index searcher("db/json/inverted_index.json",1000);
 
 
     crow::App<crow::CookieParser, Session> app;
 
     app.get_middleware<Session>();
 
-    registerFarmerRoutes(app,farmerTable,productTable,orderTable,buyerTable);
-    registerBuyerRoutes(app,farmerTable,productTable,orderTable,buyerTable);
+    registerFarmerRoutes(app,farmerTable,productTable,orderTable,buyerTable,searcher);
+    registerBuyerRoutes(app,farmerTable,productTable,orderTable,buyerTable,searcher);
 
     CROW_ROUTE(app, "/db/images/<string>")([](const crow::request&, crow::response& res, const std::string& filename) {
         res.set_static_file_info("db/images/" + filename);
@@ -149,6 +149,43 @@ int main() {
         auto page = crow::mustache::load("error.html");
         return crow::response(page.render());
     });
+    CROW_ROUTE(app, "/change_password").methods("POST"_method)([&app,&farmerTable,&buyerTable](const crow::request& req, crow::response& res) {
+        auto& session = app.get_context<Session>(req);
+        std::string user_type = session.get<std::string>("user_type");
+
+        if (user_type.empty()) {
+            crow::response res(303);
+            res.add_header("Location", "/error");
+            res.end();
+        }
+        std::string username = session.get<std::string>("username");
+        auto req_body = crow::query_string(("?" + req.body).c_str());
+        std::string old_pass=req_body.get("curr_password");
+        std::string new_pass=req_body.get("new_password");
+        if (user_type == "Farmer") {
+            farmer_data* data=farmerTable.find(username);
+            if(data->password==old_pass){
+                data->password=new_pass;
+            }
+            else{
+                res.add_header("Location", "/error");
+                res.end();
+            }
+        } 
+        else {
+            buyer_data* data=buyerTable.find(username);
+            if(data->password==old_pass){
+                data->password=new_pass;
+            }
+            else{
+                res.add_header("Location", "/error");
+                res.end();
+            }
+        }
+        res.add_header("Location", "/");
+        res.end();
+    });
+
 
     CROW_ROUTE(app, "/logout")([&app](const crow::request& req, crow::response& res) {
         auto& session = app.get_context<Session>(req);
