@@ -9,8 +9,19 @@
 #include "data_structure.hpp"
 #include <unordered_set>
 #include <iostream>
+/**
+ * @brief Implements an Inverted Index for full-text search on product data.
+ *
+ * This class maps individual words (tokens) to a set of product_ids
+ * that contain those words. It is used to quickly find products based on
+ * keywords from their name, category, or description.
+ */
+
 class inverted_index{
 private:
+    /**
+     * @brief Internal node structure for the hash table's separate chaining.
+     */
     struct link{
         std::string word;
         std::unordered_set<std::string> data;
@@ -19,6 +30,8 @@ private:
     link** ptr_arr;
     int size;
     std::string path;
+
+    // A set of common words to ignore during indexing
     std::unordered_set<std::string> stopWords = {
         "the", "a", "an", "or", "since", "is", "on", "for", "in",
         "i", "me", "my", "myself", "we", "our", "ours", "ourselves", "you", "you're",
@@ -42,6 +55,11 @@ private:
         "shouldn", "shouldn't", "wasn", "wasn't", "weren", "weren't", "won", "won't",
         "wouldn", "wouldn't"
     };
+    /**
+     * @brief Simple string hashing function (FNV-1a variant).
+     * @param uid The string (word) to hash.
+     * @return 32-bit hash value.
+     */
     uint32_t fnv1a(std::string uid){
         const uint32_t bais=2166136261u;
         const uint32_t prime=16777619u;
@@ -228,6 +246,12 @@ public:
         add_string(data->product_name,data->product_id);
     }
 
+    /**
+     * @brief Searches the index for a query string.
+     * @param query The search query (e.g., "fresh red apple").
+     * @return A vector of product_ids that match *all* non-stopword
+     * tokens in the query.
+     */
     std::vector<std::string> search(std::string str) {
         std::unordered_set<std::string> intersecting_ids;
         std::stringstream ss(str);

@@ -7,27 +7,32 @@
 #include <functional>
 #include <algorithm>
 
-
+/**
+ * @brief Generates a random alphanumeric string to be used as a unique ID.
+ *
+ * This function creates an 8-character string using a thread-safe
+ * (thread_local) random number generator for better performance
+ * in a multi-threaded environment like a web server.
+ *
+ * @return A std::string of 8 random characters.
+ */
 std::string generate_product_id() {
-    // `thread_local` ensures that each thread has its own separate instance
-    // of the generator. It's initialized only once per thread, making it
-    // both thread-safe and highly performant.
+    /**
+     * @brief A thread-local Mersenne Twister engine.
+     * 'thread_local' ensures that each thread gets its own instance
+     * of the generator, avoiding the need for locks.
+     * It's initialized using a lambda function the first time
+     * it's accessed by a thread.
+     */
     thread_local std::mt19937 generator = []{
-        // Use std::random_device to get a seed with high entropy.
         std::random_device rd;
-
-        // The Mersenne Twister engine has a large internal state. To seed it
-        // thoroughly, we fill an array with random numbers from the device
-        // and use a seed_seq to initialize the engine.
         std::array<int, std::mt19937::state_size> seed_data;
         std::generate(seed_data.begin(), seed_data.end(), std::ref(rd));
         std::seed_seq seq(seed_data.begin(), seed_data.end());
 
-        // Return the fully-seeded Mersenne Twister engine.
         return std::mt19937(seq);
     }();
 
-    // The character set includes uppercase, lowercase, and numbers.
     const std::string charset = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
     std::uniform_int_distribution<int> dist(0, charset.length() - 1);
 

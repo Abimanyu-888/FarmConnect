@@ -1,13 +1,29 @@
 #include "routes.hpp"
+
+/**
+ * @brief Utility function to check if a product is already in a buyer's cart.
+ * @param cart A vector of product_ids representing the cart.
+ * @param prod_id The product_id to check for.
+ * @return true if the product is in the cart, false otherwise.
+ */
 bool incart(std::vector<std::string> cart,std::string prod_id){
     for(std::string theitem:cart){
         if(theitem==prod_id) return true;
     }
     return false;
 }
+
+/**
+ * @brief Registers all API endpoints (routes) related to Buyer accounts and actions.
+ */
 void registerBuyerRoutes(crow::App<crow::CookieParser, Session>& app,Hash_Table<farmer_data>& farmerTable,
                             Hash_Table<product_data>& productTable,Hash_Table<order_data>& orderTable,Hash_Table<buyer_data>& buyerTable,inverted_index& searcher) {
 
+    /**
+     * @brief GET /buyer/home
+     * Renders the buyer's home page with a list of random products.
+     * Requires a valid "Buyer" session.
+     */
     CROW_ROUTE(app, "/buyer/home")([&app,&productTable,&buyerTable](const crow::request& req) -> crow::response {
         auto& session = app.get_context<Session>(req);
         std::string user_type = session.get<std::string>("user_type");
@@ -38,6 +54,12 @@ void registerBuyerRoutes(crow::App<crow::CookieParser, Session>& app,Hash_Table<
         auto page = crow::mustache::load("buyer/buyer_home.html");
         return crow::response(page.render(ctx));
     });
+
+    /**
+     * @brief GET /buyer/cart
+     * Renders the buyer's shopping cart page.
+     * Requires a valid "Buyer" session.
+     */
     CROW_ROUTE(app, "/buyer/cart")([&app,&productTable,&buyerTable](const crow::request& req) -> crow::response {
         auto& session = app.get_context<Session>(req);
         std::string user_type = session.get<std::string>("user_type");
@@ -73,6 +95,13 @@ void registerBuyerRoutes(crow::App<crow::CookieParser, Session>& app,Hash_Table<
         auto page = crow::mustache::load("buyer/cart.html");
         return crow::response(page.render(ctx));
     });
+
+    /**
+     * @brief GET /buyer/remove_from_cart/<string>
+     * Removes a specified product from the buyer's cart.
+     * Requires a valid "Buyer" session.
+     * @param prod_id The product_id to remove.
+     */
     CROW_ROUTE(app, "/buyer/remove_from_cart/<string>")([&app,&buyerTable](const crow::request& req,const std::string& prod_id) -> crow::response {
         auto& session = app.get_context<Session>(req);
         std::string user_type = session.get<std::string>("user_type");
@@ -103,6 +132,12 @@ void registerBuyerRoutes(crow::App<crow::CookieParser, Session>& app,Hash_Table<
         res.set_header("Location", "/buyer/cart");
         return res;
     });
+
+    /**
+     * @brief GET /buyer/profile
+     * Renders the buyer's profile page, showing account details and order history.
+     * Requires a valid "Buyer" session.
+     */
     CROW_ROUTE(app, "/buyer/profile")([&app,&buyerTable,&orderTable,&productTable](const crow::request& req) -> crow::response {
         auto& session = app.get_context<Session>(req);
         std::string user_type = session.get<std::string>("user_type");
@@ -136,6 +171,13 @@ void registerBuyerRoutes(crow::App<crow::CookieParser, Session>& app,Hash_Table<
         auto page = crow::mustache::load("buyer/profile.html");
         return crow::response(page.render(ctx));
     });
+
+    /**
+     * @brief GET / POST /buyer/search
+     * Performs a full-text search using the inverted index and renders the results.
+     * Handles both GET (from URL param) and POST (from form body).
+     * Requires a valid "Buyer" session.
+     */
     CROW_ROUTE(app, "/buyer/search").methods("POST"_method,"GET"_method)([&app,&productTable,&searcher,&buyerTable](const crow::request& req) -> crow::response {
         auto& session = app.get_context<Session>(req);
         std::string user_type = session.get<std::string>("user_type");
@@ -183,6 +225,13 @@ void registerBuyerRoutes(crow::App<crow::CookieParser, Session>& app,Hash_Table<
         auto page = crow::mustache::load("buyer/search.html");
         return crow::response(page.render(ctx));
     });
+
+    /**
+     * @brief GET /buyer/product/<string>
+     * Renders the detailed page for a single product.
+     * Requires a valid "Buyer" session.
+     * @param id The product_id to display.
+     */
     CROW_ROUTE(app, "/buyer/product/<string>")([&app,&productTable,&buyerTable](const crow::request& req,const std::string& id) -> crow::response {
         auto& session = app.get_context<Session>(req);
         std::string user_type = session.get<std::string>("user_type");
@@ -211,6 +260,15 @@ void registerBuyerRoutes(crow::App<crow::CookieParser, Session>& app,Hash_Table<
         return crow::response(page.render(ctx));
     });
 
+
+    /**
+     * @brief GET / POST /buyer/add_to_cart/<string>
+     * Adds a product to the buyer's cart.
+     * GET method adds quantity 1.
+     * POST method reads quantity from the form body.
+     * Requires a valid "Buyer" session.
+     * @param id The product_id to add.
+     */
     CROW_ROUTE(app, "/buyer/add_to_cart/<string>").methods("POST"_method,"GET"_method)([&app,&productTable,&buyerTable](const crow::request& req,const std::string& id) -> crow::response {
         auto& session = app.get_context<Session>(req);
         std::string user_type = session.get<std::string>("user_type");
@@ -240,6 +298,13 @@ void registerBuyerRoutes(crow::App<crow::CookieParser, Session>& app,Hash_Table<
         return res;
     });
 
+
+    /**
+     * @brief POST /buyer/update_cart
+     * Updates quantities for all items in the cart based on form submission.
+     * Rebuilds the cart and quantity vectors from the POST data.
+     * Requires a valid "Buyer" session.
+     */
     CROW_ROUTE(app, "/buyer/update_cart").methods("POST"_method)([&app,&buyerTable](const crow::request& req) -> crow::response {
         auto& session = app.get_context<Session>(req);
         std::string user_type = session.get<std::string>("user_type");
@@ -275,6 +340,15 @@ void registerBuyerRoutes(crow::App<crow::CookieParser, Session>& app,Hash_Table<
         res.set_header("Location", "/buyer/cart");
         return res;
     });
+
+    /**
+     * @brief POST /buyer/checkout
+     * Converts each item in the buyer's cart into a separate order.
+     * Clears the cart after checkout.
+     * Requires a valid "Buyer" session.
+     * * @note This checkout logic creates one order *per product* in the cart,
+     * not one single order for the whole cart.
+     */
     CROW_ROUTE(app, "/buyer/checkout").methods("POST"_method)([&app,&productTable,&orderTable,&buyerTable,&farmerTable](const crow::request& req) -> crow::response {
         auto& session = app.get_context<Session>(req);
         std::string user_type = session.get<std::string>("user_type");

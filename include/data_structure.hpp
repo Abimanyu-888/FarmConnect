@@ -12,6 +12,13 @@
 #include <numeric>     
 #include <algorithm>
 
+// --- Data Structures ---
+// These structs define the core data models for the application.
+
+/**
+ * @brief Represents a Farmer user.
+ */
+
 struct farmer_data {
     std::string name;
     std::string username;
@@ -34,6 +41,10 @@ struct farmer_data {
     orders(std::move(orders))
     {}
 };
+/**
+ * @brief Represents a Buyer user.
+ */
+
 struct buyer_data {
     std::string name;
     std::string username;
@@ -56,6 +67,9 @@ struct buyer_data {
     quantity(std::move(quantity))
     {}
 };
+/**
+ * @brief Represents a Product.
+ */
 struct product_data {
     std::string product_id;
     std::string product_name;
@@ -80,6 +94,9 @@ struct product_data {
     about(about),
     img_extension(extension){}
 };
+/**
+ * @brief Represents an Order.
+ */
 struct order_data {
     std::string order_id;
     std::vector<std::string> product_ids;
@@ -92,6 +109,9 @@ struct order_data {
     order_id(order_id), product_ids(product_ids),
     quantity(quantity),buyer(buyer),status(status) {}
 };
+/**
+ * @brief Simple struct for email-to-username mapping.
+ */
 struct email_data{
     std::string username;
     std::string email;
@@ -99,6 +119,10 @@ struct email_data{
     username(username),
     email(email){}
 };
+
+// --- JSON Serialization ---
+// Overloads for nlohmann::json to automatically convert structs to JSON.
+
 inline void to_json(nlohmann::json& j, const farmer_data& data) {
     j = nlohmann::json{
         {"name", data.name},
@@ -145,7 +169,13 @@ inline void to_json(nlohmann::json& j, const order_data& data) {
         {"status",data.status}
     };
 }
+// --- Template Metaprogramming for Generic Hash Table ---
 
+/**
+ * @brief Template trait to generically extract the unique ID string from any data struct.
+ * This allows the Hash_Table to be templated but still know which member
+ * to use as the key for hashing and lookup.
+ */
 
 template<class T>
 struct IdType;
@@ -180,6 +210,11 @@ struct IdType<email_data>{
     }
 };
 
+/**
+ * @brief Template trait (Factory Pattern) to create a new, heap-allocated
+ * data struct from a nlohmann::json object.
+ * This allows the Hash_Table to generically deserialize data from a JSON file.
+ */
 
 template<class T>
 struct jsonData;
@@ -221,12 +256,28 @@ struct jsonData<email_data>{
         return new email_data(data["username"],data["email"]);
     }
 };
-
+/**
+ * @brief Compile-time check to see if type T is one of the types in the list Ts.
+ * Used in the destructor to decide if the hash table should be saved to disk.
+ */
 template<class T, class... Ts>
 constexpr bool is_any_of = (std::is_same_v<T, Ts> || ...);
 
+/**
+ * @brief A generic Hash Table implementation using separate chaining.
+ * * @tparam dataType The type of data struct to store (e.g., farmer_data, product_data).
+ * * This hash table also maintains a parallel `std::vector<dataType*>` (`item_vector`)
+ * which stores pointers to the same data. This provides:
+ * 1. O(1) amortized lookup, add, and remove via the hash table.
+ * 2. O(1) random access and O(N) iteration via the vector.
+ * * The `remove` operation uses a "swap-and-pop" technique on the vector,
+ */
+
 template <class dataType>
 class Hash_Table{
+    /**
+     * @brief Internal node structure for the linked list in separate chaining.
+     */
     struct link{
         dataType* data;
         link* next=nullptr;
@@ -238,6 +289,11 @@ class Hash_Table{
     std::string path;
     std::vector<dataType*> item_vector;
     static std::mt19937 random_gen;
+    /**
+     * @brief FNV-1a non-cryptographic hash function.
+     * @param uid The string ID (e.g., username, product_id) to hash.
+     * @return 32-bit hash value.
+     */
     uint32_t fnv1a(std::string uid){
         const uint32_t bais=2166136261u;
         const uint32_t prime=16777619u;
@@ -331,34 +387,24 @@ public:
         // 3. Get the *last* item in the vector
         dataType* last_item_data = item_vector.back();
 
-        // 4. Perform swap-and-pop in the vector
-        
-        // Edge case: if we are deleting the last item, just pop.
         if (data_to_delete == last_item_data) {
             item_vector.pop_back();
         } 
-        // Normal case: swap last item into deleted item's slot
         else {
-            // Move last item into the slot of the item to be deleted
             item_vector[index_to_delete] = last_item_data;
-            item_vector.pop_back(); // Remove the (now duplicate) last item
+            item_vector.pop_back(); 
 
-            // 5. Update the moved item's index in the *hashtable*
             std::string last_item_uid = IdType<dataType>::get(*last_item_data);
             uint32_t last_item_hash_index = fnv1a(last_item_uid) % size;
             link* last_item_node = ptr_arr[last_item_hash_index];
             
-            // Find the link node for the (now moved) last item
             while (last_item_node != nullptr && last_item_node->data != last_item_data) {
                 last_item_node = last_item_node->next;
             }
             
-            // Update its stored index
             if (last_item_node != nullptr) {
                 last_item_node->vector_index = index_to_delete;
             } else {
-                // This is a critical error, indicates data inconsistency
-                // In a production system, you would log this.
                 std::cerr << "CRITICAL ERROR: Hashtable-vector desync on remove!" << std::endl;
             }
         }
@@ -368,6 +414,12 @@ public:
         delete node->data;
         delete node;
     }  
+    /**
+     * @brief Gets N random, non-repeating items from the hash table.
+     * Efficiently uses the parallel `item_vector`.
+     * * @param N The number of random items to retrieve.
+     * @return A vector of pointers to the random data objects.
+     */
     std::vector<dataType*> getRandomProducts(int N) {
         std::vector<dataType*> results;
         if (N <= 0 || item_vector.empty()) {
@@ -392,6 +444,11 @@ public:
 
         return results;
     }
+    /**
+     * @brief Destructor.
+     * Cleans up all heap-allocated memory (link nodes and data objects).
+     * Conditionally saves the hash table data back to its JSON file.
+     */
     ~Hash_Table(){
         nlohmann::json json_array = nlohmann::json::array();
         constexpr bool should_save=is_any_of<dataType, farmer_data, buyer_data, order_data, product_data>;

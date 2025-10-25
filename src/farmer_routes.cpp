@@ -1,6 +1,16 @@
 #include "routes.hpp"
 #include<unordered_set>
 
+
+/**
+ * @brief Calculates the total price of an order.
+ * Iterates through the products in an order, finds their prices,
+ * and calculates the total based on quantity.
+ *
+ * @param order Pointer to the order_data object.
+ * @param products The hash table of products (needed to look up prices).
+ * @return The total price of the order as an integer.
+ */
 int calculate_order_total(const order_data* order, Hash_Table<product_data>& products) {
     int total = 0;
     for (size_t i = 0; i < order->product_ids.size(); ++i) {
@@ -10,8 +20,19 @@ int calculate_order_total(const order_data* order, Hash_Table<product_data>& pro
     }
     return total;
 }
+
+/**
+ * @brief Registers all API endpoints (routes) related to Farmer accounts and actions.
+ */
 void registerFarmerRoutes(crow::App<crow::CookieParser, Session>& app,Hash_Table<farmer_data>& farmerTable,
                             Hash_Table<product_data>& productTable,Hash_Table<order_data>& orderTable,Hash_Table<buyer_data>& buyerTable,inverted_index& searcher) {
+
+    /**
+     * @brief GET /farmer/dashboard
+     * Renders the farmer's main dashboard page.
+     * Displays username, total revenue, and a list of recent orders.
+     * Requires a valid "Farmer" session.
+     */
     CROW_ROUTE(app, "/farmer/dashboard")([&app,&farmerTable,&productTable,&orderTable](const crow::request& req) -> crow::response {
         auto& session = app.get_context<Session>(req);
         std::string user_type = session.get<std::string>("user_type");
@@ -60,6 +81,12 @@ void registerFarmerRoutes(crow::App<crow::CookieParser, Session>& app,Hash_Table
         return crow::response(page.render(ctx));
     });
 
+
+    /**
+     * @brief GET /farmer/products
+     * Renders a page listing all products owned by the logged-in farmer.
+     * Requires a valid "Farmer" session.
+     */
     CROW_ROUTE(app, "/farmer/products")([&app,&farmerTable,&productTable](const crow::request& req ) -> crow::response {
         auto& session = app.get_context<Session>(req);
         std::string user_type = session.get<std::string>("user_type");
@@ -93,6 +120,12 @@ void registerFarmerRoutes(crow::App<crow::CookieParser, Session>& app,Hash_Table
         return crow::response(page.render(ctx));
     });
 
+
+    /**
+     * @brief GET /farmer/orders
+     * Renders a page listing all orders received by the logged-in farmer.
+     * Requires a valid "Farmer" session.
+     */
     CROW_ROUTE(app,"/farmer/orders/<string>")([&app,&farmerTable,&orderTable,&productTable](const crow::request& req,const std::string& tab ) -> crow::response {
         auto& session = app.get_context<Session>(req);
         std::string user_type = session.get<std::string>("user_type");
@@ -138,6 +171,13 @@ void registerFarmerRoutes(crow::App<crow::CookieParser, Session>& app,Hash_Table
         return crow::response(page.render(ctx));
     });
 
+
+    /**
+     * @brief GET /farmer/order/<string>
+     * Renders a detailed view of a single order.
+     * Requires a valid "Farmer" session.
+     * @param id The order_id to display.
+     */
     CROW_ROUTE(app, "/farmer/orders/view/<string>")([&app,&farmerTable,&productTable,&orderTable,&buyerTable](const crow::request& req ,const std::string& order_id) -> crow::response {
         auto& session = app.get_context<Session>(req);
         std::string user_type = session.get<std::string>("user_type");
@@ -185,6 +225,11 @@ void registerFarmerRoutes(crow::App<crow::CookieParser, Session>& app,Hash_Table
     });
     
 
+    /**
+     * @brief GET /farmer/settings
+     * Renders the farmer's account settings page.
+     * Requires a valid "Farmer" session.
+     */
     CROW_ROUTE(app,"/farmer/settings")([&app,&farmerTable](const crow::request& req ) -> crow::response {
         auto& session = app.get_context<Session>(req);
         std::string user_type = session.get<std::string>("user_type");
@@ -205,6 +250,12 @@ void registerFarmerRoutes(crow::App<crow::CookieParser, Session>& app,Hash_Table
         return crow::response(page.render(ctx));
     });
 
+
+    /**
+     * @brief GET /farmer/add_product
+     * Renders the form for adding a new product.
+     * Requires a valid "Farmer" session.
+     */
     CROW_ROUTE(app,"/farmer/add_product")([&app](const crow::request& req ) -> crow::response {
         auto& session = app.get_context<Session>(req);
         std::string user_type = session.get<std::string>("user_type");
@@ -219,6 +270,14 @@ void registerFarmerRoutes(crow::App<crow::CookieParser, Session>& app,Hash_Table
         return crow::response(page.render());
     });
 
+
+    /**
+     * @brief POST /farmer/new_product
+     * Handles the submission of the "add new product" form.
+     * Parses multipart/form-data, creates a new product_data object,
+     * saves the uploaded image, and indexes the product for search.
+     * Requires a valid "Farmer" session.
+     */
     CROW_ROUTE(app,"/farmer/new_product").methods("POST"_method)([&app,&farmerTable,&productTable,&searcher](const crow::request& req) -> crow::response {
         auto& session = app.get_context<Session>(req);
         std::string user_type = session.get<std::string>("user_type");
@@ -276,6 +335,14 @@ void registerFarmerRoutes(crow::App<crow::CookieParser, Session>& app,Hash_Table
         res.set_header("Location", "/farmer/products");
         return res;
     });
+
+    /**
+     * @brief GET /farmer/edit_product/<string>
+     * Renders the form for editing an existing product.
+     * Populates the form with the product's current data.
+     * Requires a valid "Farmer" session.
+     * @param id The product_id to edit.
+     */
     CROW_ROUTE(app, "/farmer/edit_product/<string>")([&app,&productTable](const crow::request& req,const std::string& id) -> crow::response {
         auto& session = app.get_context<Session>(req);
         std::string user_type = session.get<std::string>("user_type");
@@ -299,6 +366,15 @@ void registerFarmerRoutes(crow::App<crow::CookieParser, Session>& app,Hash_Table
         auto page = crow::mustache::load("farmer/edit_product.html");
         return crow::response(page.render(ctx));
     });
+
+    /**
+     * @brief GET /farmer/delete_product/<string>
+     * Deletes a product from the system.
+     * Removes it from the product table, farmer's product list, and search index.
+     * Also deletes the associated image file.
+     * Requires a valid "Farmer" session.
+     * @param id The product_id to delete.
+     */
     CROW_ROUTE(app, "/farmer/delete_product/<string>")([&app,&farmerTable,&productTable,&searcher](const crow::request& req,const std::string& id) -> crow::response {
         auto& session = app.get_context<Session>(req);
         std::string user_type = session.get<std::string>("user_type");
@@ -336,6 +412,14 @@ void registerFarmerRoutes(crow::App<crow::CookieParser, Session>& app,Hash_Table
         return res;
     });
     
+    /**
+     * @brief POST /farmer/edit_product/<string>
+     * Handles the submission of the "edit product" form.
+     * Parses multipart/form-data, updates the existing product_data object,
+     * and re-indexes the product for search.
+     * Requires a valid "Farmer" session.
+     * @param id The product_id to update.
+     */
     CROW_ROUTE(app, "/farmer/edit_product_post/<string>").methods("POST"_method)([&app,&productTable,&searcher](const crow::request& req,const std::string& id) -> crow::response {
         auto& session = app.get_context<Session>(req);
         std::string user_type = session.get<std::string>("user_type");
