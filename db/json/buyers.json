@@ -1,27 +1,273 @@
 [
     {
         "cart": [],
-        "email": "buyer1@gmail.com",
-        "name": "abimanyu",
+        "email": "buyer006@example.com",
+        "name": "Kavya Patel",
+        "orders": [
+            "order006",
+            "order031"
+        ],
+        "password": "password123",
+        "quantity": [],
+        "state": "Hyderabad",
+        "username": "buyer006"
+    },
+    {
+        "cart": [],
+        "email": "buyer001@example.com",
+        "name": "Aanya Sharma",
         "orders": [
             "order001",
-            "XPe9Tp9Z"
+            "order026"
         ],
-        "password": "abimanyu",
+        "password": "password123",
         "quantity": [],
-        "state": "tamilnadu",
+        "state": "Delhi",
         "username": "buyer001"
     },
     {
         "cart": [],
-        "email": "buyer2@gmail.com",
-        "name": "yuvraj",
+        "email": "buyer017@example.com",
+        "name": "Rehan Joshi",
         "orders": [
-            "order002"
+            "order017",
+            "order042"
         ],
-        "password": "abimanyu",
+        "password": "password123",
         "quantity": [],
-        "state": "tamilnadu",
+        "state": "Visakhapatnam",
+        "username": "buyer017"
+    },
+    {
+        "cart": [],
+        "email": "buyer007@example.com",
+        "name": "Myra Kumar",
+        "orders": [
+            "order007",
+            "order032"
+        ],
+        "password": "password123",
+        "quantity": [],
+        "state": "Pune",
+        "username": "buyer007"
+    },
+    {
+        "cart": [],
+        "email": "buyer019@example.com",
+        "name": "Samar Chatterjee",
+        "orders": [
+            "order019",
+            "order044"
+        ],
+        "password": "password123",
+        "quantity": [],
+        "state": "Patna",
+        "username": "buyer019"
+    },
+    {
+        "cart": [],
+        "email": "buyer002@example.com",
+        "name": "Aditi Verma",
+        "orders": [
+            "order002",
+            "order027"
+        ],
+        "password": "password123",
+        "quantity": [],
+        "state": "Mumbai",
         "username": "buyer002"
+    },
+    {
+        "cart": [],
+        "email": "buyer016@example.com",
+        "name": "Ishir Prasad",
+        "orders": [
+            "order016",
+            "order041"
+        ],
+        "password": "password123",
+        "quantity": [],
+        "state": "Bhopal",
+        "username": "buyer016"
+    },
+    {
+        "cart": [
+            "product053",
+            "product021"
+        ],
+        "email": "buyer008@example.com",
+        "name": "Navya Jain",
+        "orders": [
+            "order008",
+            "order033"
+        ],
+        "password": "password123",
+        "quantity": [
+            1,
+            1
+        ],
+        "state": "Ahmedabad",
+        "username": "buyer008"
+    },
+    {
+        "cart": [],
+        "email": "buyer013@example.com",
+        "name": "Shanaya Iyer",
+        "orders": [
+            "order013",
+            "order038"
+        ],
+        "password": "password123",
+        "quantity": [],
+        "state": "Nagpur",
+        "username": "buyer013"
+    },
+    {
+        "cart": [],
+        "email": "buyer020@example.com",
+        "name": "Veer Desai",
+        "orders": [
+            "order020",
+            "order045",
+            "order046",
+            "order047",
+            "order048",
+            "order049",
+            "order050"
+        ],
+        "password": "password123",
+        "quantity": [],
+        "state": "Vadodara",
+        "username": "buyer020"
+    },
+    {
+        "cart": [],
+        "email": "buyer018@example.com",
+        "name": "Arin Mishra",
+        "orders": [
+            "order018",
+            "order043"
+        ],
+        "password": "password123",
+        "quantity": [],
+        "state": "Pimpri-Chinchwad",
+        "username": "buyer018"
+    },
+    {
+        "cart": [],
+        "email": "buyer003@example.com",
+        "name": "Ananya Reddy",
+        "orders": [
+            "order003",
+            "order028"
+        ],
+        "password": "password123",
+        "quantity": [],
+        "state": "Bangalore",
+        "username": "buyer003"
+    },
+    {
+        "cart": [],
+        "email": "buyer015@example.com",
+        "name": "Zoya Gowda",
+        "orders": [
+            "order015",
+            "order040"
+        ],
+        "password": "password123",
+        "quantity": [],
+        "state": "Thane",
+        "username": "buyer015"
+    },
+    {
+        "cart": [],
+        "email": "buyer009@example.com",
+        "name": "Priya Mehra",
+        "orders": [
+            "order009",
+            "order034"
+        ],
+        "password": "password123",
+        "quantity": [],
+        "state": "Jaipur",
+        "username": "buyer009"
+    },
+    {
+        "cart": [],
+        "email": "buyer012@example.com",
+        "name": "Sara Khan",
+        "orders": [
+            "order012",
+            "order037"
+        ],
+        "password": "password123",
+        "quantity": [],
+        "state": "Kanpur",
+        "username": "buyer012"
+    },
+    {
+        "cart": [],
+        "email": "buyer004@example.com",
+        "name": "Diya Singh",
+        "orders": [
+            "order004",
+            "order029"
+        ],
+        "password": "password123",
+        "quantity": [],
+        "state": "Kolkata",
+        "username": "buyer004"
+    },
+    {
+        "cart": [],
+        "email": "buyer014@example.com",
+        "name": "Tara Nair",
+        "orders": [
+            "order014",
+            "order039"
+        ],
+        "password": "password123",
+        "quantity": [],
+        "state": "Indore",
+        "username": "buyer014"
+    },
+    {
+        "cart": [],
+        "email": "buyer011@example.com",
+        "name": "Saanvi Bose",
+        "orders": [
+            "order011",
+            "order036"
+        ],
+        "password": "password123",
+        "quantity": [],
+        "state": "Lucknow",
+        "username": "buyer011"
+    },
+    {
+        "cart": [],
+        "email": "buyer005@example.com",
+        "name": "Isha Gupta",
+        "orders": [
+            "order005",
+            "order030"
+        ],
+        "password": "password123",
+        "quantity": [],
+        "state": "Chennai",
+        "username": "buyer005"
+    },
+    {
+        "cart": [],
+        "email": "buyer010@example.com",
+        "name": "Riya Das",
+        "orders": [
+            "order010",
+            "order035"
+        ],
+        "password": "password123",
+        "quantity": [],
+        "state": "Surat",
+        "username": "buyer010"
     }
 ]

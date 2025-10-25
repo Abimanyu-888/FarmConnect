@@ -228,18 +228,46 @@ public:
         add_string(data->product_name,data->product_id);
     }
 
-    std::vector<std::string> search(std::string str){
-        std::unordered_set<std::string> unique_ids;
+    std::vector<std::string> search(std::string str) {
+        std::unordered_set<std::string> intersecting_ids;
         std::stringstream ss(str);
         std::string word;
+        bool is_first_valid_word = true;
+
         while (ss >> word) {
             std::string cleanedWord = cleanWord(word);
-            if (!cleanedWord.empty() && stopWords.find(cleanedWord) == stopWords.end()) {
-                std::unordered_set<std::string> prod_ids=find(cleanedWord);
-                unique_ids.insert(prod_ids.begin(), prod_ids.end());
+            if (cleanedWord.empty() || stopWords.find(cleanedWord) != stopWords.end()) {
+                continue;
+            }
+            std::unordered_set<std::string> current_word_ids = find(cleanedWord);
+
+            if (is_first_valid_word) {
+                intersecting_ids = std::move(current_word_ids);
+                is_first_valid_word = false;
+            } else {
+                std::unordered_set<std::string> temp_intersection;
+                
+                if (intersecting_ids.size() < current_word_ids.size()) {
+                    for (const auto& id : intersecting_ids) {
+                        if (current_word_ids.count(id)) { 
+                            temp_intersection.insert(id);
+                        }
+                    }
+                } else {
+                    for (const auto& id : current_word_ids) {
+                        if (intersecting_ids.count(id)) { 
+                            temp_intersection.insert(id);
+                        }
+                    }
+                }
+                intersecting_ids = std::move(temp_intersection);
+            }
+            if (intersecting_ids.empty()) {
+                break;
             }
         }
-        return std::vector<std::string>(unique_ids.begin(), unique_ids.end());
+
+        return std::vector<std::string>(intersecting_ids.begin(), intersecting_ids.end());
     }
     void remove(product_data* data) {
         if (data == nullptr) return; 

@@ -1,32 +1,378 @@
 [
     {
-        "Total_Revenue": 12500,
-        "email": "farmer2@gmail.com",
-        "name": "yuvraj",
+        "Total_Revenue": 12100,
+        "email": "farmer020@example.com",
+        "name": "Parth Desai",
         "orders": [
-            "order002"
+            "order013",
+            "order043"
         ],
-        "password": "abimanyu",
+        "password": "password123",
         "products": [
-            "product003"
+            "product096",
+            "product097",
+            "product098",
+            "product099",
+            "product100"
         ],
-        "state": "rajasthan",
+        "state": "Chhattisgarh",
+        "username": "farmer020"
+    },
+    {
+        "Total_Revenue": 13600,
+        "email": "farmer007@example.com",
+        "name": "Rohan Das",
+        "orders": [
+            "order006"
+        ],
+        "password": "password123",
+        "products": [
+            "product031",
+            "product032",
+            "product033",
+            "product034",
+            "product035"
+        ],
+        "state": "West Bengal",
+        "username": "farmer007"
+    },
+    {
+        "Total_Revenue": 14200,
+        "email": "farmer018@example.com",
+        "name": "Arnav Mishra",
+        "orders": [
+            "order003",
+            "order033"
+        ],
+        "password": "password123",
+        "products": [
+            "product086",
+            "product087",
+            "product088",
+            "product089",
+            "product090"
+        ],
+        "state": "Himachal Pradesh",
+        "username": "farmer018"
+    },
+    {
+        "Total_Revenue": 12950,
+        "email": "farmer002@example.com",
+        "name": "Vihaan Sharma",
+        "orders": [
+            "order010",
+            "order035"
+        ],
+        "password": "password123",
+        "products": [
+            "product006",
+            "product007",
+            "product008",
+            "product009",
+            "product010"
+        ],
+        "state": "Uttar Pradesh",
         "username": "farmer002"
     },
     {
-        "Total_Revenue": 12000,
-        "email": "farmer1@gmail.com",
-        "name": "abimanyu",
+        "Total_Revenue": 10500,
+        "email": "farmer016@example.com",
+        "name": "Sai Prasad",
         "orders": [
-            "order001",
-            "XPe9Tp9Z"
+            "order022",
+            "order047"
         ],
-        "password": "12345678",
+        "password": "password123",
+        "products": [
+            "product076",
+            "product077",
+            "product078",
+            "product079",
+            "product080"
+        ],
+        "state": "Assam",
+        "username": "farmer016"
+    },
+    {
+        "Total_Revenue": 17850,
+        "email": "farmer009@example.com",
+        "name": "Shaurya Mehra",
+        "orders": [
+            "order016",
+            "order036"
+        ],
+        "password": "password123",
+        "products": [
+            "product041",
+            "product042",
+            "product043",
+            "product044",
+            "product045"
+        ],
+        "state": "Haryana",
+        "username": "farmer009"
+    },
+    {
+        "Total_Revenue": 8800,
+        "email": "farmer004@example.com",
+        "name": "Kabir Kumar",
+        "orders": [
+            "order020",
+            "order045"
+        ],
+        "password": "password123",
+        "products": [
+            "product016",
+            "product017",
+            "product018",
+            "product019",
+            "product020"
+        ],
+        "state": "Rajasthan",
+        "username": "farmer004"
+    },
+    {
+        "Total_Revenue": 16200,
+        "email": "farmer003@example.com",
+        "name": "Advik Patel",
+        "orders": [
+            "order015",
+            "order040"
+        ],
+        "password": "password123",
+        "products": [
+            "product011",
+            "product012",
+            "product013",
+            "product014",
+            "product015"
+        ],
+        "state": "Gujarat",
+        "username": "farmer003"
+    },
+    {
+        "Total_Revenue": 15300,
+        "email": "farmer011@example.com",
+        "name": "Kian Bose",
+        "orders": [
+            "order026",
+            "order046"
+        ],
+        "password": "password123",
+        "products": [
+            "product051",
+            "product052",
+            "product053",
+            "product054",
+            "product055"
+        ],
+        "state": "Odisha",
+        "username": "farmer011"
+    },
+    {
+        "Total_Revenue": 19430,
+        "email": "farmer005@example.com",
+        "name": "Reyansh Gupta",
+        "orders": [
+            "order025",
+            "order050"
+        ],
+        "password": "password123",
+        "products": [
+            "product021",
+            "product022",
+            "product023",
+            "product024",
+            "product025"
+        ],
+        "state": "Madhya Pradesh",
+        "username": "farmer005"
+    },
+    {
+        "Total_Revenue": 9900,
+        "email": "farmer010@example.com",
+        "name": "Ayaan Khan",
+        "orders": [
+            "order021",
+            "order041"
+        ],
+        "password": "password123",
+        "products": [
+            "product046",
+            "product047",
+            "product048",
+            "product049",
+            "product050"
+        ],
+        "state": "Bihar",
+        "username": "farmer010"
+    },
+    {
+        "Total_Revenue": 18200,
+        "email": "farmer015@example.com",
+        "name": "Rudra Verma",
+        "orders": [
+            "order017",
+            "order042"
+        ],
+        "password": "password123",
+        "products": [
+            "product071",
+            "product072",
+            "product073",
+            "product074",
+            "product075"
+        ],
+        "state": "Telangana",
+        "username": "farmer015"
+    },
+    {
+        "Total_Revenue": 14520,
+        "email": "farmer001@example.com",
+        "name": "Aarav Singh",
+        "orders": [
+            "order005",
+            "order030"
+        ],
+        "password": "password123",
         "products": [
             "product001",
-            "product002"
+            "product002",
+            "product003",
+            "product004",
+            "product005"
         ],
-        "state": "tamilnadu",
+        "state": "Maharashtra",
         "username": "farmer001"
+    },
+    {
+        "Total_Revenue": 21500,
+        "email": "farmer013@example.com",
+        "name": "Krish Nair",
+        "orders": [
+            "order007",
+            "order032"
+        ],
+        "password": "password123",
+        "products": [
+            "product061",
+            "product062",
+            "product063",
+            "product064",
+            "product065"
+        ],
+        "state": "Kerala",
+        "username": "farmer013"
+    },
+    {
+        "Total_Revenue": 13900,
+        "email": "farmer014@example.com",
+        "name": "Neel Gowda",
+        "orders": [
+            "order012",
+            "order037"
+        ],
+        "password": "password123",
+        "products": [
+            "product066",
+            "product067",
+            "product068",
+            "product069",
+            "product070"
+        ],
+        "state": "Karnataka",
+        "username": "farmer014"
+    },
+    {
+        "Total_Revenue": 11500,
+        "email": "farmer006@example.com",
+        "name": "Arjun Reddy",
+        "orders": [
+            "order001"
+        ],
+        "password": "password123",
+        "products": [
+            "product026",
+            "product027",
+            "product028",
+            "product029",
+            "product030"
+        ],
+        "state": "Andhra Pradesh",
+        "username": "farmer006"
+    },
+    {
+        "Total_Revenue": 19800,
+        "email": "farmer019@example.com",
+        "name": "Dev Chatterjee",
+        "orders": [
+            "order008",
+            "order038"
+        ],
+        "password": "password123",
+        "products": [
+            "product091",
+            "product092",
+            "product093",
+            "product094",
+            "product095"
+        ],
+        "state": "Jharkhand",
+        "username": "farmer019"
+    },
+    {
+        "Total_Revenue": 12800,
+        "email": "farmer012@example.com",
+        "name": "Dhruv Iyer",
+        "orders": [
+            "order002"
+        ],
+        "password": "password123",
+        "products": [
+            "product056",
+            "product057",
+            "product058",
+            "product059",
+            "product060"
+        ],
+        "state": "Tamil Nadu",
+        "username": "farmer012"
+    },
+    {
+        "Total_Revenue": 16750,
+        "email": "farmer017@example.com",
+        "name": "Yash Joshi",
+        "orders": [
+            "order027"
+        ],
+        "password": "password123",
+        "products": [
+            "product081",
+            "product082",
+            "product083",
+            "product084",
+            "product085"
+        ],
+        "state": "Uttarakhand",
+        "username": "farmer017"
+    },
+    {
+        "Total_Revenue": 20100,
+        "email": "farmer008@example.com",
+        "name": "Ishaan Jain",
+        "orders": [
+            "order011",
+            "order031"
+        ],
+        "password": "password123",
+        "products": [
+            "product036",
+            "product037",
+            "product038",
+            "product039",
+            "product040"
+        ],
+        "state": "Punjab",
+        "username": "farmer008"
     }
 ]
