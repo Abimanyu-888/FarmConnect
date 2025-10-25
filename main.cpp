@@ -173,14 +173,14 @@ int main() {
         std::string type = req_body.get("type");
 
         if(emialMap.find(email)){
-            crow::response res(303);
+            res.code = 303;
             res.add_header("Location", "/error"); // Redirect to error if email is taken
-            return res;
+            res.end(); return;
         }
         if(farmerTable.find(username) || buyerTable.find(username)){
-            crow::response res(303);
+            res.code = 303;
             res.add_header("Location", "/landing_page"); // Redirect to error if email is taken
-            return res;
+            res.end(); return;
         }
 
         auto& session = app.get_context<Session>(req);
