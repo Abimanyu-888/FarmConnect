@@ -1,3 +1,0 @@
-/Users/citadel/Downloads/programming/Project/FarmConnect/build/CMakeFiles/dsa_project.dir
-/Users/citadel/Downloads/programming/Project/FarmConnect/build/CMakeFiles/edit_cache.dir
-/Users/citadel/Downloads/programming/Project/FarmConnect/build/CMakeFiles/rebuild_cache.dir
